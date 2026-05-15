@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "tailwindcss-animate";
 
 @theme {
   /* Colors - Warm Neutrals & Notion Blue */
