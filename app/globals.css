@@ -1,26 +1,157 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "tailwindcss-animate";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Colors - Warm Neutrals & Notion Blue */
+  --color-background: #ffffff;
+  --color-foreground: rgba(0, 0, 0, 0.95);
+  
+  --color-notion-blue: #0075de;
+  --color-notion-blue-active: #005bab;
+  
+  --color-warm-white: #f6f5f4;
+  --color-warm-dark: #31302e;
+  
+  --color-warm-gray-500: #615d59;
+  --color-warm-gray-300: #a39e98;
+  
+  --color-notion-teal: #2a9d99;
+  --color-notion-green: #1aae39;
+  --color-notion-orange: #dd5b00;
+  --color-notion-pink: #ff64c8;
+  
+  --color-badge-blue-bg: #f2f9ff;
+  --color-badge-blue-text: #097fe8;
+
+  /* Shadow Stacks - Multi-layered for felt depth */
+  --shadow-notion-card: rgba(0,0,0,0.04) 0px 4px 18px, 
+                        rgba(0,0,0,0.027) 0px 2.025px 7.84688px, 
+                        rgba(0,0,0,0.02) 0px 0.8px 2.925px, 
+                        rgba(0,0,0,0.01) 0px 0.175px 1.04062px;
+                        
+  --shadow-notion-deep: rgba(0,0,0,0.01) 0px 1px 3px, 
+                        rgba(0,0,0,0.02) 0px 3px 7px, 
+                        rgba(0,0,0,0.02) 0px 7px 15px, 
+                        rgba(0,0,0,0.04) 0px 14px 28px, 
+                        rgba(0,0,0,0.05) 0px 23px 52px;
+
+  /* Border Radius Scale */
+  --radius-notion-micro: 4px;
+  --radius-notion-subtle: 5px;
+  --radius-notion-standard: 8px;
+  --radius-notion-comfortable: 12px;
+  --radius-notion-large: 16px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  * {
+    @apply border-[rgba(0,0,0,0.1)];
+    /* OpenType features for sophisticated typography */
+    font-variant-numeric: lining-nums;
+    font-feature-settings: "lnum" 1, "locl" 1;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    @apply bg-background text-foreground selection:bg-[rgba(0,117,222,0.1)];
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Headings with Compression Scale */
+  h1 {
+    @apply font-bold text-[64px] leading-[1.0] tracking-[-2.125px];
+  }
+
+  h2 {
+    @apply font-bold text-[48px] leading-[1.0] tracking-[-1.5px];
+  }
+
+  h3 {
+    @apply font-bold text-[26px] leading-[1.23] tracking-[-0.625px];
+  }
+
+  h4 {
+    @apply font-bold text-[22px] leading-[1.27] tracking-[-0.25px];
+  }
+
+  /* Global Link Style */
+  a {
+    @apply text-notion-blue transition-colors hover:underline underline-offset-4;
+  }
+
+  /* Global Selection Spacing */
+  section {
+    @apply py-16 md:py-24 px-6;
+  }
+
+  /* Alternate background sections auto-application */
+  section:nth-of-type(even) {
+    @apply bg-warm-white;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Shadcn UI Variables override for auto-application */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0% / 0.95;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0% / 0.95;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0% / 0.95;
+    
+    --primary: 208 100% 43.5%; /* #0075de */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 30 5% 96%; /* #f6f5f4 */
+    --secondary-foreground: 30 5% 18%; /* #31302e */
+    
+    --muted: 30 5% 96%;
+    --muted-foreground: 20 4% 36%; /* #615d59 */
+    
+    --accent: 30 5% 96%;
+    --accent-foreground: 0 0% 0% / 0.95;
+    
+    --destructive: 348 100% 70%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 0 0% 0% / 0.1;
+    --input: 0 0% 87%;
+    --ring: 208 92% 47%; /* #097fe8 */
+    
+    --radius: 0.75rem; /* 12px default for cards */
+  }
+
+  /* Global Card Elevation */
+  .card-notion {
+    @apply bg-white border border-[rgba(0,0,0,0.1)] rounded-notion-comfortable shadow-notion-card;
+  }
+
+  /* Notion Whisper Border Utility */
+  .border-whisper {
+    @apply border border-[rgba(0,0,0,0.1)];
+  }
+}
+
+/* Accessibility Focus Ring */
+:focus-visible {
+  @apply outline-none ring-2 ring-notion-blue ring-offset-1;
+}
+
+/* Scrollbar styling to match Notion's minimal feel */
+::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-[rgba(0,0,0,0.1)] rounded-full hover:bg-[rgba(0,0,0,0.2)];
 }
