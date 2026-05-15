@@ -6,7 +6,7 @@ export async function proxy(request: NextRequest) {
   const session = await auth.api.getSession({
     headers: await headers()
   });
-  
+
   if (!session) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
@@ -16,5 +16,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/settings/:path*"],
+  matcher: ["/dashboard/:path*", "/settings/:path*", "/profile-picture"],
 };
