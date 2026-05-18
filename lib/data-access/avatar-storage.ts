@@ -1,7 +1,7 @@
 import "server-only";
 
 import { put } from "@vercel/blob";
-// 100 KB
+
 const MAX_AVATAR_BYTES = 100 * 1024;
 const ALLOWED_AVATAR_MIME_TYPES = new Set(["image/webp", "image/jpeg", "image/png"]);
 
@@ -11,7 +11,7 @@ export function validateAvatarFile(file: File): string | null {
   }
 
   if (file.size > MAX_AVATAR_BYTES) {
-    return "Avatar image must be 2M or smaller.";
+    return "Avatar image must be 100KB or smaller.";
   }
 
   return null;
@@ -28,7 +28,7 @@ export async function uploadAvatarFile({
   const fileName = `avatars/${safeUserId}-${Date.now()}.webp`;
 
   const uploadedBlob = await put(fileName, file, {
-    access: "public",
+    access: "private",
     addRandomSuffix: true,
   });
 
