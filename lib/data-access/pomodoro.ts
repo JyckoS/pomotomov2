@@ -108,7 +108,7 @@ export async function getPomodoroTimerTypeById({
   timerTypeId,
 }: {
   userId: string;
-  timerTypeId: number;
+  timerTypeId: string;
 }) {
   const result = await db
     .select(timerTypeSelection)
@@ -128,7 +128,7 @@ export async function updatePomodoroSettings({
   userId: string;
   autoStartBreak?: boolean;
   autoStartPomodoros?: boolean;
-  selectedTimerTypeId?: number | null;
+  selectedTimerTypeId?: string | null;
 }) {
   const currentConfig = await ensurePomodoroConfig(userId);
   const currentSettings = currentConfig.settings;

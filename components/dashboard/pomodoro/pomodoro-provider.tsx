@@ -18,7 +18,7 @@ const POMODORO_STORAGE_KEY = "pomotomo:pomodoro:state:v1";
 type PersistedPomodoroState = {
   timerTypes: TimerType[];
   settings: PomodoroSettings;
-  selectedTimerTypeId: number | null;
+  selectedTimerTypeId: string | null;
   phase: Phase;
   isRunning: boolean;
   remainingSeconds: number;
@@ -31,13 +31,13 @@ type PomodoroContextValue = {
   phase: Phase;
   isRunning: boolean;
   selectedTimerType: TimerType | null;
-  selectedTimerTypeId: number | null;
+  selectedTimerTypeId: string | null;
   timeLeftSeconds: number;
   progress: number;
   settingsError: string | null;
   toggleRunning: () => void;
   skipPhase: () => void;
-  selectTimerType: (timerTypeId: number) => void;
+  selectTimerType: (timerTypeId: string) => void;
   updateSettings: (patch: Partial<PomodoroSettings>) => Promise<void>;
   onTimerTypeCreated: (timerType: TimerType) => void;
 };
@@ -53,6 +53,12 @@ function readPersistedPomodoroState(): PersistedPomodoroState | null {
   try {
     const parsed = JSON.parse(rawValue) as PersistedPomodoroState;
     if (!Array.isArray(parsed.timerTypes) || !parsed.settings) {
+      return null;
+    }
+    if (parsed.selectedTimerTypeId !== null && typeof parsed.selectedTimerTypeId !== "string") {
+      return null;
+    }
+    if (!parsed.timerTypes.every((timerType) => typeof timerType.id === "string")) {
       return null;
     }
 
@@ -75,8 +81,6 @@ export function PomodoroProvider({
   initialSettings: PomodoroSettings;
   children: ReactNode;
 }) {
-  const [persistedState] = useState<PersistedPomodoroState | null>(() => readPersistedPomodoroState());
-
   const initialSelectedTimerTypeId =
     initialSettings.selectedTimerTypeId &&
     initialTimerTypes.some((timerType) => timerType.id === initialSettings.selectedTimerTypeId)
@@ -88,19 +92,16 @@ export function PomodoroProvider({
     "focus",
   );
 
-  const [timerTypes, setTimerTypes] = useState<TimerType[]>(persistedState?.timerTypes ?? initialTimerTypes);
-  const [settings, setSettings] = useState<PomodoroSettings>(persistedState?.settings ?? initialSettings);
-  const [phase, setPhase] = useState<Phase>(persistedState?.phase ?? "focus");
-  const [isRunning, setIsRunning] = useState<boolean>(persistedState?.isRunning ?? false);
-  const [selectedTimerTypeId, setSelectedTimerTypeId] = useState<number | null>(
-    persistedState?.selectedTimerTypeId ?? initialSelectedTimerTypeId,
-  );
+  const [timerTypes, setTimerTypes] = useState<TimerType[]>(initialTimerTypes);
+  const [settings, setSettings] = useState<PomodoroSettings>(initialSettings);
+  const [phase, setPhase] = useState<Phase>("focus");
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [selectedTimerTypeId, setSelectedTimerTypeId] = useState<string | null>(initialSelectedTimerTypeId);
   const [settingsError, setSettingsError] = useState<string | null>(null);
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(
-    persistedState?.remainingSeconds ?? fallbackFocusDuration,
-  );
-  const [runEndsAtMs, setRunEndsAtMs] = useState<number | null>(persistedState?.runEndsAtMs ?? null);
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(fallbackFocusDuration);
+  const [runEndsAtMs, setRunEndsAtMs] = useState<number | null>(null);
   const [nowMs, setNowMs] = useState(() => Date.now());
+  const [hasHydratedPersistedState, setHasHydratedPersistedState] = useState(false);
 
   const selectedTimerType = useMemo(() => {
     if (selectedTimerTypeId === null) {
@@ -186,6 +187,26 @@ export function PomodoroProvider({
   }, [isRunning]);
 
   useEffect(() => {
+    const persistedState = readPersistedPomodoroState();
+    const timeoutId = window.setTimeout(() => {
+      if (persistedState) {
+        setTimerTypes(persistedState.timerTypes);
+        setSettings(persistedState.settings);
+        setPhase(persistedState.phase);
+        setIsRunning(persistedState.isRunning);
+        setSelectedTimerTypeId(persistedState.selectedTimerTypeId);
+        setRemainingSeconds(persistedState.remainingSeconds);
+        setRunEndsAtMs(persistedState.runEndsAtMs);
+        setNowMs(Date.now());
+      }
+
+      setHasHydratedPersistedState(true);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
     const phaseLabel = phase === "focus" ? "Focus" : "Break";
     const minutes = Math.floor(timeLeftSeconds / 60);
     const seconds = timeLeftSeconds % 60;
@@ -201,6 +222,7 @@ export function PomodoroProvider({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (!hasHydratedPersistedState) return;
 
     const valueToPersist: PersistedPomodoroState = {
       timerTypes,
@@ -213,7 +235,7 @@ export function PomodoroProvider({
     };
 
     window.localStorage.setItem(POMODORO_STORAGE_KEY, JSON.stringify(valueToPersist));
-  }, [isRunning, phase, runEndsAtMs, selectedTimerType, settings, timeLeftSeconds, timerTypes]);
+  }, [hasHydratedPersistedState, isRunning, phase, runEndsAtMs, selectedTimerType, settings, timeLeftSeconds, timerTypes]);
 
   const updateSettings = async (patch: Partial<PomodoroSettings>) => {
     const previousSettings = settings;
@@ -238,7 +260,7 @@ export function PomodoroProvider({
     setSettings(payload.settings);
   };
 
-  const selectTimerType = (timerTypeId: number) => {
+  const selectTimerType = (timerTypeId: string) => {
     const timerType = timerTypes.find((candidate) => candidate.id === timerTypeId);
     if (!timerType) return;
 

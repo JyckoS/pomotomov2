@@ -1,7 +1,7 @@
 export type Phase = "focus" | "break";
 
 export type TimerType = {
-  id: number;
+  id: string;
   name: string;
   focusDurationMinutes: number;
   breakDurationMinutes: number;
@@ -11,5 +11,5 @@ export type TimerType = {
 export type PomodoroSettings = {
   autoStartBreak: boolean;
   autoStartPomodoros: boolean;
-  selectedTimerTypeId: number | null;
+  selectedTimerTypeId: string | null;
 };

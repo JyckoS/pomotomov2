@@ -13,8 +13,8 @@ export function TimerTypePanel({
   onOpenAddDialog,
 }: {
   timerTypes: TimerType[];
-  selectedTimerTypeId: number | null;
-  onSelectTimerType: (id: number) => void;
+  selectedTimerTypeId: string | null;
+  onSelectTimerType: (id: string) => void;
   onOpenAddDialog: () => void;
 }) {
   return (
@@ -24,7 +24,7 @@ export function TimerTypePanel({
       <div className="relative mt-2">
         <select
           value={selectedTimerTypeId ?? ""}
-          onChange={(event) => onSelectTimerType(Number(event.target.value))}
+          onChange={(event) => onSelectTimerType(event.target.value)}
           className="h-10 w-full appearance-none rounded-[8px] border border-[rgba(0,0,0,0.1)] bg-[#f6f5f4] px-3 pr-10 text-sm font-semibold text-[rgba(0,0,0,0.95)] outline-none transition-colors focus-visible:border-[#097fe8] focus-visible:ring-2 focus-visible:ring-[#097fe8]/20"
         >
           {timerTypes.map((timerType) => (

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
 import { ensurePomodoroConfig } from "@/lib/data-access/pomodoro";
+import { HeartbeatRunner } from "@/components/heartbeat-runner";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 
 export default async function DashboardLayout({
@@ -32,6 +33,7 @@ export default async function DashboardLayout({
       initialTimerTypes={pomodoroConfig.timerTypes}
       initialSettings={pomodoroConfig.settings}
     >
+      <HeartbeatRunner />
       {children}
     </DashboardShell>
   );

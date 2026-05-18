@@ -9,7 +9,7 @@ const patchSettingsSchema = z
   .object({
     autoStartBreak: z.boolean().optional(),
     autoStartPomodoros: z.boolean().optional(),
-    selectedTimerTypeId: z.number().int().nullable().optional(),
+    selectedTimerTypeId: z.string().uuid().nullable().optional(),
   })
   .refine(
     (payload) =>

@@ -1,4 +1,4 @@
-import { type LucideIcon, NotebookPen, Timer } from "lucide-react";
+import { type LucideIcon, NotebookPen, Timer, Users } from "lucide-react";
 
 export type SidebarNavItem = {
   name: string;
@@ -13,8 +13,13 @@ export const sidebarNavItems: SidebarNavItem[] = [
     icon: Timer,
   },
   {
-    name: "Notes",
-    href: "/dashboard/notes",
-    icon: NotebookPen,
+      name: "Notes",
+      href: "/dashboard/notes",
+      icon: NotebookPen,
+  },
+  {
+    name: "Friends",
+    href: "/dashboard/friends",
+    icon: Users,
   },
 ];

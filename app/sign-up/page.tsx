@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,7 +36,7 @@ export default function SignUpPage() {
       email,
       password,
       name: derivedName,
-      callbackURL: "/profile-picture",
+      callbackURL: "/dashboard",
     });
 
     if (error) {
@@ -44,6 +46,8 @@ export default function SignUpPage() {
     }
 
     setIsSubmitting(false);
+    router.replace("/dashboard");
+    router.refresh();
   };
 
   return (

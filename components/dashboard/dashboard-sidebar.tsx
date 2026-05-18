@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 import { usePomodoro } from "@/components/dashboard/pomodoro/pomodoro-provider";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,42 @@ export function DashboardSidebar({
   const { phase, isRunning, timeLeftSeconds } = usePomodoro();
   const firstName = userName.trim().split(" ")[0] || "there";
   const normalizedPathname = pathname.replace(/\/+$/, "");
+  const [friendsUnreadTotal, setFriendsUnreadTotal] = useState(0);
+
+  const loadFriendsUnreadTotal = useCallback(async () => {
+    const response = await fetch("/api/friends/unread", {
+      method: "GET",
+      cache: "no-store",
+    }).catch(() => null);
+
+    if (!response || !response.ok) {
+      return;
+    }
+
+    const data: { totalUnread: number } = await response.json();
+    setFriendsUnreadTotal(data.totalUnread);
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      void loadFriendsUnreadTotal();
+    }, 0);
+
+    const intervalId = window.setInterval(() => {
+      void loadFriendsUnreadTotal();
+    }, 5000);
+
+    const handleFocus = () => {
+      void loadFriendsUnreadTotal();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.clearInterval(intervalId);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [loadFriendsUnreadTotal]);
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -58,6 +95,7 @@ export function DashboardSidebar({
             const isActive =
               normalizedPathname === normalizedHref || normalizedPathname.startsWith(`${normalizedHref}/`);
             const isPomodoroItem = normalizedHref === "/dashboard/pomodoro";
+            const isFriendsItem = normalizedHref === "/dashboard/friends";
 
             return (
               <Link
@@ -79,6 +117,11 @@ export function DashboardSidebar({
                     </p>
                   ) : null}
                 </div>
+                {isFriendsItem && friendsUnreadTotal > 0 ? (
+                  <span className="ml-auto inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#e02424] px-1 text-[10px] font-bold leading-none text-white">
+                    {friendsUnreadTotal > 99 ? "99+" : friendsUnreadTotal}
+                  </span>
+                ) : null}
               </Link>
             );
           })}
