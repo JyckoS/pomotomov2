@@ -167,6 +167,7 @@ export async function listFriends({
       .select({
         id: user.id,
         name: user.name,
+        status: user.status,
         image: user.image,
       })
       .from(user)
@@ -202,6 +203,7 @@ export async function listFriends({
         friendshipId: relationship.id,
         userId: friendUser.id,
         name: friendUser.name,
+        status: friendUser.status,
         avatarSrc: getUserAvatarSrc(friendUser.id, friendUser.image),
         isOnline,
         lastHeartbeatAt: lastHeartbeatAt ? lastHeartbeatAt.toISOString() : null,

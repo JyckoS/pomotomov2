@@ -6,6 +6,7 @@ import type { PomodoroSettings, TimerType } from "@/types/pomodoro";
 export function DashboardShell({
   userName,
   userEmail,
+  userStatus,
   avatarSrc,
   initialTimerTypes,
   initialSettings,
@@ -13,6 +14,7 @@ export function DashboardShell({
 }: {
   userName: string;
   userEmail: string;
+  userStatus: string;
   avatarSrc: string;
   initialTimerTypes: TimerType[];
   initialSettings: PomodoroSettings;
@@ -22,7 +24,12 @@ export function DashboardShell({
     <PomodoroProvider initialTimerTypes={initialTimerTypes} initialSettings={initialSettings}>
       <main className="min-h-screen bg-[#f6f5f4]">
         <div className="mx-auto flex min-h-screen w-full max-w-[1200px] flex-col md:flex-row">
-          <DashboardSidebar userName={userName} userEmail={userEmail} avatarSrc={avatarSrc} />
+          <DashboardSidebar
+            userName={userName}
+            userEmail={userEmail}
+            userStatus={userStatus}
+            avatarSrc={avatarSrc}
+          />
 
           <div className="flex min-h-screen min-w-0 flex-1 flex-col">
             <header className="sticky top-0 z-20 border-b border-[rgba(0,0,0,0.1)] bg-white/95 px-4 py-4 backdrop-blur-sm sm:px-6">

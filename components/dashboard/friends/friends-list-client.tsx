@@ -11,6 +11,7 @@ type FriendListItem = {
   friendshipId: string;
   userId: string;
   name: string;
+  status: string;
   avatarSrc: string | null;
   isOnline: boolean;
   lastHeartbeatAt: string | null;
@@ -119,6 +120,7 @@ export function FriendsListClient() {
               <UserAvatar name={friend.name} avatarSrc={friend.avatarSrc} />
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-[rgba(0,0,0,0.95)]">{friend.name}</p>
+                <p className="truncate text-xs text-[#a39e98]">{friend.status}</p>
                 <p className="text-xs text-[#615d59]">
                   {friend.isOnline ? "Online now" : formatLastOnline(friend.lastHeartbeatAt)}
                 </p>
