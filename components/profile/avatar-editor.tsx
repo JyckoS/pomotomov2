@@ -198,9 +198,9 @@ export function AvatarEditor({ initialImageUrl }: { initialImageUrl?: string | n
       setIsSubmitting(false);
       router.push("/dashboard");
       router.refresh();
-    } catch {
+    } catch (error) {
       setIsSubmitting(false);
-      setErrorMessage("Unable to save avatar. Please try again.");
+      setErrorMessage(error instanceof Error ? error.message : "Unable to save avatar. Please try again.");
     }
   }, [cropAreaPixels, imageSource, router]);
 

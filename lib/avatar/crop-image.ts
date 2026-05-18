@@ -2,6 +2,11 @@
 
 import type { Area } from "react-easy-crop";
 
+const MAX_AVATAR_BYTES = 100 * 1024;
+const MAX_OUTPUT_SIZE = 256;
+const MIN_OUTPUT_SIZE = 64;
+const QUALITY_STEPS = [0.9, 0.82, 0.74, 0.66, 0.58, 0.5, 0.42, 0.34, 0.26];
+
 async function loadImage(source: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const image = new Image();
@@ -12,16 +17,32 @@ async function loadImage(source: string): Promise<HTMLImageElement> {
   });
 }
 
-export async function createCroppedAvatarBlob({
-  imageSource,
+async function canvasToBlob(canvas: HTMLCanvasElement, quality: number): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          reject(new Error("Failed to prepare avatar image."));
+          return;
+        }
+
+        resolve(blob);
+      },
+      "image/webp",
+      quality,
+    );
+  });
+}
+
+function renderCroppedAvatar({
+  image,
   cropAreaPixels,
-  outputSize = 256,
+  outputSize,
 }: {
-  imageSource: string;
+  image: HTMLImageElement;
   cropAreaPixels: Area;
-  outputSize?: number;
-}): Promise<Blob> {
-  const image = await loadImage(imageSource);
+  outputSize: number;
+}): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = outputSize;
   canvas.height = outputSize;
@@ -54,18 +75,40 @@ export async function createCroppedAvatarBlob({
     outputSize,
   );
 
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) {
-          reject(new Error("Failed to prepare avatar image."));
-          return;
-        }
+  return canvas;
+}
 
-        resolve(blob);
-      },
-      "image/webp",
-      0.86,
-    );
-  });
+export async function createCroppedAvatarBlob({
+  imageSource,
+  cropAreaPixels,
+  outputSize = MAX_OUTPUT_SIZE,
+  maxBytes = MAX_AVATAR_BYTES,
+}: {
+  imageSource: string;
+  cropAreaPixels: Area;
+  outputSize?: number;
+  maxBytes?: number;
+}): Promise<Blob> {
+  const image = await loadImage(imageSource);
+
+  for (
+    let currentOutputSize = Math.min(outputSize, MAX_OUTPUT_SIZE);
+    currentOutputSize >= MIN_OUTPUT_SIZE;
+    currentOutputSize = Math.max(MIN_OUTPUT_SIZE, Math.floor(currentOutputSize * 0.8))
+  ) {
+    const canvas = renderCroppedAvatar({
+      image,
+      cropAreaPixels,
+      outputSize: currentOutputSize,
+    });
+
+    for (const quality of QUALITY_STEPS) {
+      const blob = await canvasToBlob(canvas, quality);
+      if (blob.size <= maxBytes) {
+        return blob;
+      }
+    }
+  }
+
+  throw new Error("Could not compress avatar under 100KB. Please choose a different image.");
 }
