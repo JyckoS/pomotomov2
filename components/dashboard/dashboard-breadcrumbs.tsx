@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { usePreferences } from "@/components/preferences/preferences-provider";
+import { I18nDictionary } from "@/lib/preferences/i18n";
 
 function formatSegment(segment: string): string {
   return segment
@@ -14,7 +15,7 @@ function formatSegment(segment: string): string {
     .join(" ");
 }
 
-function translateSegment(segment: string, dict: any) {
+function translateSegment(segment: string, dict: I18nDictionary) {
   const normalized = segment.toLowerCase();
   if (normalized === "pomodoro") return dict.common.pomodoro;
   if (normalized === "friends") return dict.common.friends;

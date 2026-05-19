@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { UserAvatar } from "@/components/dashboard/friends/user-avatar";
 import { Button } from "@/components/ui/button";
 import { usePreferences } from "@/components/preferences/preferences-provider";
+import { I18nDictionary } from "@/lib/preferences/i18n";
 
 type FriendListItem = {
   friendshipId: string;
@@ -28,7 +29,7 @@ type FriendsListPayload = {
   hasNextPage: boolean;
 };
 
-function formatLastOnline(lastHeartbeatAt: string | null, dict: any) {
+function formatLastOnline(lastHeartbeatAt: string | null, dict: I18nDictionary) {
   if (!lastHeartbeatAt) return dict.friendsSection.lastOnlineNever;
   const diffMs = Date.now() - new Date(lastHeartbeatAt).getTime();
   const diffMinutes = Math.max(1, Math.floor(diffMs / 60_000));
