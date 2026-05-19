@@ -23,6 +23,7 @@ type PersistedPomodoroState = {
   isRunning: boolean;
   remainingSeconds: number;
   runEndsAtMs: number | null;
+  runSegmentStartRemainingSeconds: number | null;
 };
 
 type PomodoroContextValue = {
@@ -56,6 +57,13 @@ function readPersistedPomodoroState(): PersistedPomodoroState | null {
       return null;
     }
     if (parsed.selectedTimerTypeId !== null && typeof parsed.selectedTimerTypeId !== "string") {
+      return null;
+    }
+    if (
+      parsed.runSegmentStartRemainingSeconds !== undefined &&
+      parsed.runSegmentStartRemainingSeconds !== null &&
+      typeof parsed.runSegmentStartRemainingSeconds !== "number"
+    ) {
       return null;
     }
     if (!parsed.timerTypes.every((timerType) => typeof timerType.id === "string")) {
@@ -131,6 +139,7 @@ export function PomodoroProvider({
   const phaseRef = useRef(phase);
   const selectedTimerTypeRef = useRef<TimerType | null>(selectedTimerType);
   const settingsRef = useRef(settings);
+  const runSegmentStartRemainingSecondsRef = useRef<number | null>(null);
 
   useEffect(() => {
     phaseRef.current = phase;
@@ -143,6 +152,40 @@ export function PomodoroProvider({
   useEffect(() => {
     settingsRef.current = settings;
   }, [settings]);
+
+  const recordPomodoroSeconds = async (seconds: number) => {
+    if (seconds <= 0) {
+      return;
+    }
+
+    const response = await fetch("/api/pomodoro/records", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ seconds }),
+    }).catch(() => null);
+
+    if (!response || !response.ok) {
+      return;
+    }
+  };
+
+  const recordFocusSegment = async (currentTimeLeftSeconds: number) => {
+    if (phaseRef.current !== "focus") {
+      return;
+    }
+
+    const runSegmentStartRemainingSeconds = runSegmentStartRemainingSecondsRef.current;
+    if (runSegmentStartRemainingSeconds === null) {
+      return;
+    }
+
+    runSegmentStartRemainingSecondsRef.current = null;
+
+    const elapsedSeconds = Math.max(0, runSegmentStartRemainingSeconds - currentTimeLeftSeconds);
+    await recordPomodoroSeconds(elapsedSeconds);
+  };
 
   useEffect(() => {
     if (!isRunning) return;
@@ -170,9 +213,14 @@ export function PomodoroProvider({
             ? settingsRef.current.autoStartBreak
             : settingsRef.current.autoStartPomodoros;
 
+        if (currentPhase === "focus") {
+          void recordFocusSegment(0);
+        }
+
         void playDing().catch(() => null);
         setPhase(nextPhase);
         setRemainingSeconds(nextPhaseDuration);
+        runSegmentStartRemainingSecondsRef.current = shouldAutoContinue ? nextPhaseDuration : null;
 
         if (!shouldAutoContinue) {
           setIsRunning(false);
@@ -197,6 +245,9 @@ export function PomodoroProvider({
         setSelectedTimerTypeId(persistedState.selectedTimerTypeId);
         setRemainingSeconds(persistedState.remainingSeconds);
         setRunEndsAtMs(persistedState.runEndsAtMs);
+        runSegmentStartRemainingSecondsRef.current =
+          persistedState.runSegmentStartRemainingSeconds ??
+          (persistedState.isRunning ? persistedState.remainingSeconds : null);
         setNowMs(Date.now());
       }
 
@@ -232,6 +283,7 @@ export function PomodoroProvider({
       isRunning,
       remainingSeconds: timeLeftSeconds,
       runEndsAtMs: isRunning ? runEndsAtMs : null,
+      runSegmentStartRemainingSeconds: runSegmentStartRemainingSecondsRef.current,
     };
 
     window.localStorage.setItem(POMODORO_STORAGE_KEY, JSON.stringify(valueToPersist));
@@ -268,6 +320,7 @@ export function PomodoroProvider({
     setPhase("focus");
     setRemainingSeconds(getPhaseDurationSeconds(timerType, "focus"));
     setRunEndsAtMs(null);
+    runSegmentStartRemainingSecondsRef.current = null;
     setNowMs(Date.now());
     setIsRunning(false);
     void updateSettings({ selectedTimerTypeId: timerTypeId });
@@ -277,6 +330,7 @@ export function PomodoroProvider({
     if (!selectedTimerType) return;
 
     if (isRunning) {
+      void recordFocusSegment(timeLeftSeconds);
       setRemainingSeconds(timeLeftSeconds);
       setRunEndsAtMs(null);
       setIsRunning(false);
@@ -284,6 +338,7 @@ export function PomodoroProvider({
     }
 
     const nextTimeLeft = timeLeftSeconds > 0 ? timeLeftSeconds : currentPhaseTotalSeconds;
+    runSegmentStartRemainingSecondsRef.current = nextTimeLeft;
     setRemainingSeconds(nextTimeLeft);
     setRunEndsAtMs(Date.now() + nextTimeLeft * 1000);
     setNowMs(Date.now());
@@ -296,15 +351,21 @@ export function PomodoroProvider({
     const nextPhase: Phase = phase === "focus" ? "break" : "focus";
     const nextPhaseDuration = getPhaseDurationSeconds(selectedTimerType, nextPhase);
 
+    if (phase === "focus" && isRunning) {
+      void recordFocusSegment(timeLeftSeconds);
+    }
+
     setPhase(nextPhase);
     setRemainingSeconds(nextPhaseDuration);
     setNowMs(Date.now());
 
     if (isRunning) {
+      runSegmentStartRemainingSecondsRef.current = nextPhaseDuration;
       setRunEndsAtMs(Date.now() + nextPhaseDuration * 1000);
       return;
     }
 
+    runSegmentStartRemainingSecondsRef.current = null;
     setRunEndsAtMs(null);
   };
 
@@ -314,6 +375,7 @@ export function PomodoroProvider({
     setPhase("focus");
     setRemainingSeconds(getPhaseDurationSeconds(timerType, "focus"));
     setRunEndsAtMs(null);
+    runSegmentStartRemainingSecondsRef.current = null;
     setNowMs(Date.now());
     setIsRunning(false);
     void updateSettings({ selectedTimerTypeId: timerType.id });
