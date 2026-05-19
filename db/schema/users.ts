@@ -5,6 +5,8 @@ export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   status: text("status").default("Hey there! I'm using Pomotomo.").notNull(),
+  themeMode: text("theme_mode").default("auto").notNull(),
+  languageMode: text("language_mode").default("auto").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),

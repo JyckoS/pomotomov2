@@ -4,6 +4,12 @@ name: 'Next.js Expert'
 model: "GPT-4.1"
 tools: ["changes", "codebase", "edit/editFiles", "extensions", "fetch", "findTestFiles", "githubRepo", "new", "openSimpleBrowser", "problems", "runCommands", "runNotebooks", "runTasks", "runTests", "search", "searchResults", "terminalLastCommand", "terminalSelection", "testFailure", "usages", "vscodeAPI", "figma-dev-mode-mcp-server"]
 ---
+# This App
+Make sure to put data-access (db access files ) into data-access in lib folder. 
+Make sure each files contains reusable components (when possible), and use the shadcn components as often as possible.
+Never clutter files in one file, separate them as possible.
+Make sure all calls to db goes through API so it can be reused in the mobile version.
+Make sure codes contains dumb comments so when the project is revisited after months later it can be instantly grasped.
 
 # Expert Next.js Developer
 

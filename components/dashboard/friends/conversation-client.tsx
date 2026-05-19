@@ -5,6 +5,7 @@ import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react
 import { UserAvatar } from "@/components/dashboard/friends/user-avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { usePreferences } from "@/components/preferences/preferences-provider";
 
 type ConversationMessage = {
   id: string;
@@ -57,7 +58,7 @@ export function ConversationClient({ conversationId }: { conversationId: string 
 
       if (!response || !response.ok) {
         const data = await response?.json().catch(() => null);
-        throw new Error(data?.error ?? "Unable to load conversation.");
+        throw new Error(data?.error ?? dict.friendsSection.conversationError);
       }
 
       const data: ConversationPayload = await response.json();
@@ -83,7 +84,7 @@ export function ConversationClient({ conversationId }: { conversationId: string 
         await loadConversation();
       } catch (loadError) {
         if (!cancelled) {
-          const message = loadError instanceof Error ? loadError.message : "Unable to load conversation.";
+          const message = loadError instanceof Error ? loadError.message : dict.friendsSection.conversationError;
           setError(message);
         }
       } finally {
@@ -106,6 +107,7 @@ export function ConversationClient({ conversationId }: { conversationId: string 
   }, [conversationId, loadConversation]);
 
   const currentUserId = payload?.currentUserId ?? "";
+  const { dictionary: dict } = usePreferences();
 
   const sortedMessages = useMemo(() => payload?.messages ?? [], [payload?.messages]);
 
@@ -126,7 +128,7 @@ export function ConversationClient({ conversationId }: { conversationId: string 
 
     if (!response || !response.ok) {
       const data = await response?.json().catch(() => null);
-      setError(data?.error ?? "Unable to send message.");
+      setError(data?.error ?? dict.friendsSection.conversationError);
       setSending(false);
       return;
     }
@@ -146,7 +148,7 @@ export function ConversationClient({ conversationId }: { conversationId: string 
         appendOlder: true,
       });
     } catch (loadError) {
-      const message = loadError instanceof Error ? loadError.message : "Unable to load older messages.";
+      const message = loadError instanceof Error ? loadError.message : dict.friendsSection.loadOlderError;
       setError(message);
     } finally {
       setLoadingOlder(false);
@@ -155,7 +157,7 @@ export function ConversationClient({ conversationId }: { conversationId: string 
 
   return (
     <div className="space-y-4">
-      {loading && !payload ? <p className="text-sm text-[#615d59]">Loading conversation...</p> : null}
+      {loading && !payload ? <p className="text-sm text-[#615d59]">{dict.friendsSection.loadingConversation}</p> : null}
       {error ? <p className="text-sm text-[#dd5b00]">{error}</p> : null}
 
       {payload ? (
@@ -164,7 +166,7 @@ export function ConversationClient({ conversationId }: { conversationId: string 
             <UserAvatar name={payload.otherParticipant.name} avatarSrc={payload.otherParticipant.avatarSrc} />
             <div>
               <p className="text-sm font-semibold text-[rgba(0,0,0,0.95)]">{payload.otherParticipant.name}</p>
-              <p className="text-xs text-[#615d59]">Direct conversation</p>
+              <p className="text-xs text-[#615d59]">{dict.friendsSection.directConversation}</p>
             </div>
           </div>
 
@@ -172,13 +174,13 @@ export function ConversationClient({ conversationId }: { conversationId: string 
             {payload.hasMore ? (
               <div className="flex justify-center">
                 <Button type="button" variant="outline" size="sm" onClick={() => void handleLoadOlder()} disabled={loadingOlder}>
-                  {loadingOlder ? "Loading..." : "Load older"}
+                  {loadingOlder ? dict.common.saving : dict.friendsSection.loadOlder}
                 </Button>
               </div>
             ) : null}
 
             {sortedMessages.length === 0 ? (
-              <p className="text-center text-sm text-[#615d59]">No messages yet. Start the conversation.</p>
+              <p className="text-center text-sm text-[#615d59]">{`${dict.friendsSection.noMessages} ${dict.friendsSection.startConversation}`}</p>
             ) : null}
 
             {sortedMessages.map((message) => {
@@ -215,11 +217,11 @@ export function ConversationClient({ conversationId }: { conversationId: string 
             <Input
               value={messageText}
               onChange={(event) => setMessageText(event.target.value)}
-              placeholder="Type a message..."
+              placeholder={dict.friendsSection.typeMessage}
               maxLength={2000}
             />
             <Button type="submit" disabled={sending || !messageText.trim()}>
-              {sending ? "Sending..." : "Send"}
+              {sending ? dict.friendsSection.sending : dict.friendsSection.send}
             </Button>
           </form>
         </div>

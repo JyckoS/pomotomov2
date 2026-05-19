@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { usePreferences } from "@/components/preferences/preferences-provider";
 
 export function ConfirmActionDialog({
   open,
@@ -29,6 +30,7 @@ export function ConfirmActionDialog({
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
 }) {
+  const { dictionary: dict } = usePreferences();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -38,10 +40,10 @@ export function ConfirmActionDialog({
         </DialogHeader>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
-            Cancel
+            {dict.common.cancel}
           </Button>
           <Button type="button" variant={confirmVariant} onClick={onConfirm} disabled={loading}>
-            {loading ? "Please wait..." : confirmLabel}
+            {loading ? dict.common.saving : confirmLabel}
           </Button>
         </DialogFooter>
       </DialogContent>

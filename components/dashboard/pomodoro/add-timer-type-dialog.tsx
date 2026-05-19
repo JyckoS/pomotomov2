@@ -2,6 +2,8 @@
 
 import { type FormEvent, useState } from "react";
 
+import { usePreferences } from "@/components/preferences/preferences-provider";
+
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -18,6 +20,7 @@ export function AddTimerTypeDialog({
   onOpenChange: (open: boolean) => void;
   onTimerTypeCreated: (timerType: TimerType) => void;
 }) {
+  const pref = usePreferences();
   const [isCreatingTimerType, setIsCreatingTimerType] = useState(false);
   const [createTimerError, setCreateTimerError] = useState<string | null>(null);
   const [newTimerName, setNewTimerName] = useState("");
@@ -32,17 +35,17 @@ export function AddTimerTypeDialog({
     const breakDurationMinutes = Number(newBreakDuration);
 
     if (!newTimerName.trim()) {
-      setCreateTimerError("Please add a timer name.");
+      setCreateTimerError(pref.dictionary.pomodoroSection.addTimerTypeError);
       return;
     }
 
     if (!Number.isInteger(focusDurationMinutes) || focusDurationMinutes < 1 || focusDurationMinutes > 240) {
-      setCreateTimerError("Focus duration must be between 1 and 240 minutes.");
+      setCreateTimerError(pref.dictionary.pomodoroSection.addTimerTypeError);
       return;
     }
 
     if (!Number.isInteger(breakDurationMinutes) || breakDurationMinutes < 1 || breakDurationMinutes > 120) {
-      setCreateTimerError("Break duration must be between 1 and 120 minutes.");
+      setCreateTimerError(pref.dictionary.pomodoroSection.addTimerTypeError);
       return;
     }
 
@@ -61,7 +64,7 @@ export function AddTimerTypeDialog({
     }).catch(() => null);
 
     if (!response || !response.ok) {
-      setCreateTimerError("Unable to create timer type right now.");
+      setCreateTimerError(pref.dictionary.pomodoroSection.addTimerTypeError);
       setIsCreatingTimerType(false);
       return;
     }
@@ -80,27 +83,27 @@ export function AddTimerTypeDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add timer type</DialogTitle>
-          <DialogDescription>Create your own focus and break rhythm.</DialogDescription>
+          <DialogTitle>{pref.dictionary.pomodoroSection.addDialogTitle}</DialogTitle>
+          <DialogDescription>{pref.dictionary.pomodoroSection.addDialogDescription}</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleCreateTimerType} className="grid gap-3">
           <div className="grid gap-1.5">
             <Label htmlFor="timer-name" className="text-xs font-semibold text-[#615d59]">
-              Name
+              {pref.dictionary.pomodoroSection.timerName}
             </Label>
             <Input
               id="timer-name"
               value={newTimerName}
               onChange={(event) => setNewTimerName(event.target.value)}
-              placeholder="e.g. Coding Sprint"
+              placeholder={pref.dictionary.pomodoroSection.timerNamePlaceholder}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="grid gap-1.5">
               <Label htmlFor="focus-duration" className="text-xs font-semibold text-[#615d59]">
-                Focus (mins)
+                {pref.dictionary.pomodoroSection.focusMins}
               </Label>
               <Input
                 id="focus-duration"
@@ -113,7 +116,7 @@ export function AddTimerTypeDialog({
             </div>
             <div className="grid gap-1.5">
               <Label htmlFor="break-duration" className="text-xs font-semibold text-[#615d59]">
-                Break (mins)
+                {pref.dictionary.pomodoroSection.breakMins}
               </Label>
               <Input
                 id="break-duration"
@@ -129,7 +132,7 @@ export function AddTimerTypeDialog({
           {createTimerError ? <p className="text-sm text-[#dd5b00]">{createTimerError}</p> : null}
 
           <Button type="submit" disabled={isCreatingTimerType}>
-            {isCreatingTimerType ? "Saving..." : "Add timer type"}
+            {isCreatingTimerType ? pref.dictionary.pomodoroSection.savingTimer : pref.dictionary.pomodoroSection.addTimerType}
           </Button>
         </form>
       </DialogContent>

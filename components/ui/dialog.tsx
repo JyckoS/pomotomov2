@@ -45,15 +45,15 @@ function DialogOverlay({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
   return (
-    <DialogPrimitive.Overlay
-      data-slot="dialog-overlay"
-      className={cn(
-        // Notion overlay is a very subtle dark tint to maintain warmth
-        "fixed inset-0 isolate z-50 bg-black/5 duration-200 data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
-        className
-      )}
-      {...props}
-    />
+      <DialogPrimitive.Overlay
+        data-slot="dialog-overlay"
+        className={cn(
+          // Notion overlay is a very subtle dark tint to maintain warmth
+          "fixed inset-0 isolate z-50 bg-black/5 duration-200 data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0 dark:bg-black/45",
+          className
+        )}
+        {...props}
+      />
   )
 }
 
@@ -72,7 +72,7 @@ function DialogContent({
         data-slot="dialog-content"
         className={cn(
           // Deep elevation stack and whisper border
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-[12px] bg-white p-8 text-[16px] text-[rgba(0,0,0,0.95)] shadow-[rgba(0,0,0,0.01)_0px_1px_3px,rgba(0,0,0,0.02)_0px_3px_7px,rgba(0,0,0,0.02)_0px_7px_15px,rgba(0,0,0,0.04)_0px_14px_28px,rgba(0,0,0,0.05)_0px_23px_52px] border border-[rgba(0,0,0,0.1)] duration-200 outline-none sm:max-w-lg data-open:animate-in data-open:fade-in-0 data-open:zoom-in-98 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-98",
+          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-[12px] border border-[rgba(0,0,0,0.1)] bg-white p-8 text-[16px] text-[rgba(0,0,0,0.95)] shadow-[rgba(0,0,0,0.01)_0px_1px_3px,rgba(0,0,0,0.02)_0px_3px_7px,rgba(0,0,0,0.02)_0px_7px_15px,rgba(0,0,0,0.04)_0px_14px_28px,rgba(0,0,0,0.05)_0px_23px_52px] duration-200 outline-none dark:border-[rgba(255,255,255,0.14)] dark:bg-[#171614] dark:text-[rgba(255,255,255,0.95)] sm:max-w-lg data-open:animate-in data-open:fade-in-0 data-open:zoom-in-98 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-98",
           className
         )}
         {...props}
@@ -82,7 +82,7 @@ function DialogContent({
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
             <Button
               variant="ghost"
-              className="absolute top-4 right-4 text-[rgba(0,0,0,0.5)] hover:text-[rgba(0,0,0,0.95)]"
+              className="absolute top-4 right-4 text-[rgba(0,0,0,0.5)] hover:text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.6)] dark:hover:text-[rgba(255,255,255,0.95)]"
               size="icon-sm"
             >
               <XIcon weight="bold" />
@@ -141,7 +141,7 @@ function DialogTitle({
     <DialogPrimitive.Title
       data-slot="dialog-title"
       // Sub-heading Large style: 26px, weight 700, tight tracking
-      className={cn("text-[26px] font-bold leading-[1.23] tracking-[-0.625px] text-[rgba(0,0,0,0.95)]", className)}
+      className={cn("text-[26px] font-bold leading-[1.23] tracking-[-0.625px] text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]", className)}
       {...props}
     />
   )
@@ -157,6 +157,7 @@ function DialogDescription({
       // Body style: 16px, weight 400, warm gray
       className={cn(
         "text-[16px] leading-[1.5] text-[#615d59] *:[a]:text-[#0075de] *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-[#005bab]",
+        "dark:text-[#bab6b1] dark:*:[a]:text-[#62aef0] dark:*:[a]:hover:text-[#97c8f5]",
         className
       )}
       {...props}

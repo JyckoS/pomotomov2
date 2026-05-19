@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { ensurePomodoroConfig } from "@/lib/data-access/pomodoro";
 import { getUserStatus } from "@/lib/data-access/user-profile";
+import { getUserPreferences } from "@/lib/data-access/user-preferences";
 import { HeartbeatRunner } from "@/components/heartbeat-runner";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { DEFAULT_USER_STATUS } from "@/lib/user-status";
@@ -27,6 +28,7 @@ export default async function DashboardLayout({
 
   const pomodoroConfig = await ensurePomodoroConfig(session.user.id);
   const userStatus = await getUserStatus({ userId: session.user.id });
+  const userPreferences = await getUserPreferences({ userId: session.user.id });
 
   return (
     <DashboardShell
@@ -36,6 +38,7 @@ export default async function DashboardLayout({
       avatarSrc="/api/profile/avatar"
       initialTimerTypes={pomodoroConfig.timerTypes}
       initialSettings={pomodoroConfig.settings}
+      accountPreferences={userPreferences}
     >
       <HeartbeatRunner />
       {children}

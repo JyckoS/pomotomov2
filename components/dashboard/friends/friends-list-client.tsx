@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { UserAvatar } from "@/components/dashboard/friends/user-avatar";
 import { Button } from "@/components/ui/button";
+import { usePreferences } from "@/components/preferences/preferences-provider";
 
 type FriendListItem = {
   friendshipId: string;
@@ -27,18 +28,19 @@ type FriendsListPayload = {
   hasNextPage: boolean;
 };
 
-function formatLastOnline(lastHeartbeatAt: string | null) {
-  if (!lastHeartbeatAt) return "Last online: never";
+function formatLastOnline(lastHeartbeatAt: string | null, dict: any) {
+  if (!lastHeartbeatAt) return dict.friendsSection.lastOnlineNever;
   const diffMs = Date.now() - new Date(lastHeartbeatAt).getTime();
   const diffMinutes = Math.max(1, Math.floor(diffMs / 60_000));
-  if (diffMinutes < 60) return `Last online: ${diffMinutes}m ago`;
+  if (diffMinutes < 60) return dict.friendsSection.lastOnlineMinute.replace("{{value}}", String(diffMinutes));
   const diffHours = Math.floor(diffMinutes / 60);
-  if (diffHours < 24) return `Last online: ${diffHours}h ago`;
+  if (diffHours < 24) return dict.friendsSection.lastOnlineHour.replace("{{value}}", String(diffHours));
   const diffDays = Math.floor(diffHours / 24);
-  return `Last online: ${diffDays}d ago`;
+  return dict.friendsSection.lastOnlineDay.replace("{{value}}", String(diffDays));
 }
 
 export function FriendsListClient() {
+  const { dictionary: dict } = usePreferences();
   const router = useRouter();
   const [payload, setPayload] = useState<FriendsListPayload | null>(null);
   const [page, setPage] = useState(1);
@@ -59,7 +61,7 @@ export function FriendsListClient() {
       if (cancelled) return;
 
       if (!response || !response.ok) {
-        setError("Unable to load your friends right now.");
+        setError(dict.friendsSection.loadFriendsError);
         setLoading(false);
         return;
       }
@@ -86,7 +88,7 @@ export function FriendsListClient() {
     }).catch(() => null);
 
     if (!response || !response.ok) {
-      setError("Unable to open chat right now.");
+      setError(dict.friendsSection.actionError);
       setChattingWith(null);
       return;
     }
@@ -99,16 +101,16 @@ export function FriendsListClient() {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-[22px] leading-[1.27] tracking-[-0.25px] text-[rgba(0,0,0,0.95)]">Friends List</h3>
-        <p className="text-sm text-[#615d59]">Online friends appear first. Start or continue chat from the right side.</p>
+        <h3 className="text-[22px] leading-[1.27] tracking-[-0.25px] text-[rgba(0,0,0,0.95)]">{dict.friendsSection.listTitle}</h3>
+        <p className="text-sm text-[#615d59]">{dict.friendsSection.listDescription}</p>
       </div>
 
       {error ? <p className="text-sm text-[#dd5b00]">{error}</p> : null}
 
       <div className="space-y-2">
-        {loading && !payload ? <p className="text-sm text-[#615d59]">Loading friends...</p> : null}
+        {loading && !payload ? <p className="text-sm text-[#615d59]">{dict.friendsSection.loadingFriends}</p> : null}
         {!loading && payload && payload.items.length === 0 ? (
-          <p className="text-sm text-[#615d59]">No friends yet.</p>
+          <p className="text-sm text-[#615d59]">{dict.friendsSection.noFriends}</p>
         ) : null}
 
         {payload?.items.map((friend) => (
@@ -122,7 +124,7 @@ export function FriendsListClient() {
                 <p className="truncate text-sm font-semibold text-[rgba(0,0,0,0.95)]">{friend.name}</p>
                 <p className="truncate text-xs text-[#a39e98]">{friend.status}</p>
                 <p className="text-xs text-[#615d59]">
-                  {friend.isOnline ? "Online now" : formatLastOnline(friend.lastHeartbeatAt)}
+                  {friend.isOnline ? dict.friendsSection.onlineNow : formatLastOnline(friend.lastHeartbeatAt, dict)}
                 </p>
               </div>
             </div>
@@ -133,7 +135,7 @@ export function FriendsListClient() {
                   type="button"
                   size="icon-sm"
                   variant="outline"
-                  aria-label={`Open chat with ${friend.name}`}
+                  aria-label={dict.friendsSection.openChatWith.replace("{{name}}", friend.name)}
                   disabled={chattingWith === friend.userId}
                   onClick={() => void handleStartChat(friend.userId)}
                 >
@@ -153,13 +155,13 @@ export function FriendsListClient() {
       {payload ? (
         <div className="flex items-center justify-between pt-1">
           <p className="text-xs text-[#615d59]">
-            Showing {(payload.page - 1) * payload.pageSize + 1}
+            {dict.friendsSection.showing} {(payload.page - 1) * payload.pageSize + 1}
             {" - "}
-            {Math.min(payload.page * payload.pageSize, payload.total)} of {payload.total}
+            {Math.min(payload.page * payload.pageSize, payload.total)} {dict.friendsSection.of} {payload.total}
           </p>
           <div className="flex items-center gap-2">
             <Button type="button" variant="outline" disabled={page <= 1} onClick={() => setPage((prev) => prev - 1)}>
-              Previous
+              {dict.common.previous}
             </Button>
             <Button
               type="button"
@@ -167,7 +169,7 @@ export function FriendsListClient() {
               disabled={!payload.hasNextPage}
               onClick={() => setPage((prev) => prev + 1)}
             >
-              Next
+              {dict.common.next}
             </Button>
           </div>
         </div>

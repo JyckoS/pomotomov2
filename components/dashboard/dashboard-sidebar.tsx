@@ -9,9 +9,11 @@ import { usePomodoro } from "@/components/dashboard/pomodoro/pomodoro-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { sidebarNavItems } from "@/components/dashboard/sidebar-nav-config";
+import { PreferencesDialog } from "@/components/preferences/preferences-dialog";
 import { authClient } from "@/lib/auth-client";
 import { formatTimer } from "@/lib/pomodoro/utils";
 import { DEFAULT_USER_STATUS, MAX_USER_STATUS_LENGTH } from "@/lib/user-status";
+import { usePreferences } from "@/components/preferences/preferences-provider";
 
 export function DashboardSidebar({
   userName,
@@ -27,6 +29,7 @@ export function DashboardSidebar({
   const pathname = usePathname();
   const router = useRouter();
   const { phase, isRunning, timeLeftSeconds } = usePomodoro();
+  const { dictionary: dict } = usePreferences();
   const firstName = userName.trim().split(" ")[0] || "there";
   const normalizedPathname = pathname.replace(/\/+$/, "");
   const [friendsUnreadTotal, setFriendsUnreadTotal] = useState(0);
@@ -35,6 +38,16 @@ export function DashboardSidebar({
   const [statusDraft, setStatusDraft] = useState(userStatus || DEFAULT_USER_STATUS);
   const [isSavingStatus, setIsSavingStatus] = useState(false);
   const [statusError, setStatusError] = useState<string | null>(null);
+
+  const getNavLabel = useCallback(
+    (href: string, fallback: string) => {
+      if (href === "/dashboard/pomodoro") return dict.common.pomodoro;
+      if (href === "/dashboard/notes") return dict.common.notes;
+      if (href === "/dashboard/friends") return dict.common.friends;
+      return fallback;
+    },
+    [dict.common.friends, dict.common.notes, dict.common.pomodoro],
+  );
 
   const loadFriendsUnreadTotal = useCallback(async () => {
     const response = await fetch("/api/friends/unread", {
@@ -108,7 +121,7 @@ export function DashboardSidebar({
   };
 
   return (
-    <aside className="flex w-full flex-col border-b border-[rgba(0,0,0,0.1)] bg-white px-4 py-4 md:sticky md:top-0 md:h-screen md:w-72 md:border-r md:border-b-0 md:px-5 md:py-6">
+    <aside className="flex w-full flex-col border-b border-[rgba(0,0,0,0.1)] bg-white px-4 py-4 dark:border-[rgba(255,255,255,0.12)] dark:bg-[#181715] md:sticky md:top-0 md:h-screen md:w-72 md:border-r md:border-b-0 md:px-5 md:py-6">
       <div className="flex items-center gap-3">
         <Link
           href="/profile-picture"
@@ -120,24 +133,26 @@ export function DashboardSidebar({
         </Link>
 
         <div className="min-w-0">
-          <p className="text-sm text-[#615d59]">Hello, {firstName}</p>
-          <p className="truncate text-[15px] font-semibold text-[rgba(0,0,0,0.95)]">{userName}</p>
-          <p className="truncate text-xs text-[#a39e98]">{userEmail}</p>
+          <p className="text-sm text-[#615d59] dark:text-[#beb8b1]">{dict.common.hello}, {firstName}</p>
+          <p className="truncate text-[15px] font-semibold text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]">{userName}</p>
+          <p className="truncate text-xs text-[#a39e98] dark:text-[#8f8a84]">{userEmail}</p>
         </div>
       </div>
 
-      <div className="mt-3 rounded-[8px] border border-[rgba(0,0,0,0.1)] bg-[#f6f5f4] px-3 py-2">
+      <div className="mt-3 rounded-[8px] border border-[rgba(0,0,0,0.1)] bg-[#f6f5f4] px-3 py-2 dark:border-[rgba(255,255,255,0.12)] dark:bg-[#23211f]">
         <div className="mb-1 flex items-center justify-between gap-2">
-          <p className="text-[11px] font-semibold tracking-[0.125px] text-[#a39e98]">STATUS</p>
+          <p className="text-[11px] font-semibold tracking-[0.125px] text-[#a39e98] dark:text-[#9e9993]">
+            {dict.common.status.toUpperCase()}
+          </p>
           {!isEditingStatus ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-xs"
-              className="text-[#615d59] hover:text-[rgba(0,0,0,0.95)]"
-              onClick={() => {
-                setStatusDraft(statusValue);
-                setStatusError(null);
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  className="text-[#615d59] hover:text-[rgba(0,0,0,0.95)] dark:text-[#beb8b1] dark:hover:text-[rgba(255,255,255,0.95)]"
+                  onClick={() => {
+                    setStatusDraft(statusValue);
+                    setStatusError(null);
                 setIsEditingStatus(true);
               }}
               aria-label="Edit status"
@@ -172,16 +187,18 @@ export function DashboardSidebar({
                   }}
                   disabled={isSavingStatus}
                 >
-                  Cancel
+                  {dict.common.cancel}
                 </Button>
                 <Button type="submit" size="xs" disabled={isSavingStatus}>
-                  {isSavingStatus ? "Saving..." : "Save"}
+                  {isSavingStatus ? dict.common.saving : dict.common.save}
                 </Button>
               </div>
             </div>
           </form>
         ) : (
-          <p className="truncate text-xs text-[#615d59]">{statusValue || DEFAULT_USER_STATUS}</p>
+          <p className="truncate text-xs text-[#615d59] dark:text-[#beb8b1]">
+            {statusValue || DEFAULT_USER_STATUS}
+          </p>
         )}
 
         {statusError ? <p className="mt-1 text-xs text-[#dd5b00]">{statusError}</p> : null}
@@ -189,7 +206,9 @@ export function DashboardSidebar({
 
       <div className="mt-6 flex flex-1 flex-col">
         <div className="space-y-2">
-          <p className="text-xs font-semibold tracking-[0.125px] text-[#a39e98]">WORKSPACE</p>
+          <p className="text-xs font-semibold tracking-[0.125px] text-[#a39e98] dark:text-[#9e9993]">
+            {dict.common.workspace.toUpperCase()}
+          </p>
           {sidebarNavItems.map((item) => {
             const normalizedHref = item.href.replace(/\/+$/, "");
             const isActive =
@@ -203,17 +222,17 @@ export function DashboardSidebar({
                 href={item.href}
                 className={`flex items-center gap-2 rounded-[8px] border px-3 py-2 text-sm font-semibold no-underline transition-colors hover:no-underline ${
                   isActive
-                    ? "border-[rgba(0,0,0,0.1)] bg-[#f6f5f4] text-[rgba(0,0,0,0.95)]"
-                    : "border-transparent bg-white text-[#615d59] hover:border-[rgba(0,0,0,0.1)] hover:bg-[#f6f5f4] hover:text-[rgba(0,0,0,0.95)]"
+                    ? "border-[rgba(0,0,0,0.1)] bg-[#f6f5f4] text-[rgba(0,0,0,0.95)] dark:border-[rgba(255,255,255,0.14)] dark:bg-[#252320] dark:text-[rgba(255,255,255,0.95)]"
+                    : "border-transparent bg-white text-[#615d59] hover:border-[rgba(0,0,0,0.1)] hover:bg-[#f6f5f4] hover:text-[rgba(0,0,0,0.95)] dark:bg-[#181715] dark:text-[#beb8b1] dark:hover:border-[rgba(255,255,255,0.14)] dark:hover:bg-[#23211f] dark:hover:text-[rgba(255,255,255,0.95)]"
                 }`}
               >
                 <item.icon aria-hidden="true" className="size-4" />
                 <div className="min-w-0">
-                  <p>{item.name}</p>
+                  <p>{getNavLabel(item.href, item.name)}</p>
                   {isPomodoroItem ? (
-                    <p className="truncate text-[11px] font-medium text-[#a39e98]">
-                      {phase === "focus" ? "Focus" : "Break"} {formatTimer(timeLeftSeconds)}
-                      {isRunning ? " • Running" : " • Paused"}
+                    <p className="truncate text-[11px] font-medium text-[#a39e98] dark:text-[#9e9993]">
+                      {phase === "focus" ? dict.common.focus : dict.common.break} {formatTimer(timeLeftSeconds)}
+                      {isRunning ? ` • ${dict.common.running}` : ` • ${dict.common.paused}`}
                     </p>
                   ) : null}
                 </div>
@@ -228,14 +247,15 @@ export function DashboardSidebar({
         </div>
 
         <div className="mt-6 md:mt-auto">
+          <PreferencesDialog />
           <Button
             type="button"
             variant="outline"
-            className="w-full justify-start text-[#615d59] hover:text-[rgba(0,0,0,0.95)]"
+            className="mt-2 w-full justify-start text-[#615d59] hover:text-[rgba(0,0,0,0.95)] dark:text-[#beb8b1] dark:hover:text-[rgba(255,255,255,0.95)]"
             onClick={handleSignOut}
           >
             <LogOut className="size-4" />
-            Logout
+            {dict.common.logout}
           </Button>
         </div>
       </div>

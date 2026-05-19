@@ -4,6 +4,7 @@ import { Settings } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { usePreferences } from "@/components/preferences/preferences-provider";
 
 import type { PomodoroSettings } from "@/types/pomodoro";
 
@@ -16,24 +17,25 @@ export function PomodoroSettingsDialog({
   settingsError: string | null;
   onUpdateSettings: (patch: Partial<PomodoroSettings>) => Promise<void>;
 }) {
+  const pref = usePreferences();
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button type="button" variant="outline" size="icon" aria-label="Open timer settings">
+        <Button type="button" variant="outline" size="icon" aria-label={pref.dictionary.pomodoroSection.settingsTitle}>
           <Settings className="size-4" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Timer Settings</DialogTitle>
-          <DialogDescription>Choose how each cycle should continue.</DialogDescription>
+          <DialogTitle>{pref.dictionary.pomodoroSection.settingsTitle}</DialogTitle>
+          <DialogDescription>{pref.dictionary.pomodoroSection.settingsDescription}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <label className="flex items-center justify-between gap-3 rounded-[8px] border border-[rgba(0,0,0,0.1)] p-3">
             <div className="space-y-1">
-              <p className="text-[15px] font-semibold text-[rgba(0,0,0,0.95)]">Auto start break</p>
-              <p className="text-xs text-[#615d59]">Automatically start break when focus ends.</p>
+              <p className="text-[15px] font-semibold text-[rgba(0,0,0,0.95)]">{pref.dictionary.pomodoroSection.autoStartBreak}</p>
+              <p className="text-xs text-[#615d59]">{pref.dictionary.pomodoroSection.autoStartBreakDescription}</p>
             </div>
             <input
               type="checkbox"
@@ -45,8 +47,8 @@ export function PomodoroSettingsDialog({
 
           <label className="flex items-center justify-between gap-3 rounded-[8px] border border-[rgba(0,0,0,0.1)] p-3">
             <div className="space-y-1">
-              <p className="text-[15px] font-semibold text-[rgba(0,0,0,0.95)]">Auto start pomodoros</p>
-              <p className="text-xs text-[#615d59]">Automatically start focus when break ends.</p>
+              <p className="text-[15px] font-semibold text-[rgba(0,0,0,0.95)]">{pref.dictionary.pomodoroSection.autoStartPomodoros}</p>
+              <p className="text-xs text-[#615d59]">{pref.dictionary.pomodoroSection.autoStartPomodorosDescription}</p>
             </div>
             <input
               type="checkbox"

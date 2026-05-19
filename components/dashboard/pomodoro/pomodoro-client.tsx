@@ -7,6 +7,7 @@ import { PomodoroSettingsDialog } from "./settings-dialog";
 import { TimerDisplay } from "./timer-display";
 import { TimerTypePanel } from "./timer-type-panel";
 import { usePomodoro } from "@/components/dashboard/pomodoro/pomodoro-provider";
+import { usePreferences } from "@/components/preferences/preferences-provider";
 
 export function PomodoroClient() {
   const {
@@ -26,16 +27,16 @@ export function PomodoroClient() {
     onTimerTypeCreated,
   } = usePomodoro();
   const [isAddTimerDialogOpen, setIsAddTimerDialogOpen] = useState(false);
-
+  const pref = usePreferences();
   return (
     <div className="mx-auto w-full max-w-5xl">
       <div className="relative rounded-[16px] border border-[rgba(0,0,0,0.1)] bg-gradient-to-b from-white to-[#f6f9fc] p-4 shadow-[rgba(0,0,0,0.04)_0px_4px_18px,rgba(0,0,0,0.027)_0px_2.025px_7.84688px,rgba(0,0,0,0.02)_0px_0.8px_2.925px,rgba(0,0,0,0.01)_0px_0.175px_1.04062px] sm:p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h3 className="text-[26px] font-bold leading-[1.23] tracking-[-0.625px] text-[rgba(0,0,0,0.95)]">
-              Pomodoro Timer
+              {pref.dictionary.pomodoroSection.title}
             </h3>
-            <p className="mt-1 text-sm text-[#615d59]">Designed to keep you in flow with focus and break cycles.</p>
+            <p className="mt-1 text-sm text-[#615d59]">{pref.dictionary.pomodoroSection.subtitle}</p>
           </div>
           <PomodoroSettingsDialog
             settings={settings}

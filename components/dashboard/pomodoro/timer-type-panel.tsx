@@ -3,6 +3,7 @@
 import { ChevronDown, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { usePreferences } from "@/components/preferences/preferences-provider";
 
 import type { TimerType } from "@/types/pomodoro";
 
@@ -17,9 +18,10 @@ export function TimerTypePanel({
   onSelectTimerType: (id: string) => void;
   onOpenAddDialog: () => void;
 }) {
+  const pref = usePreferences();
   return (
     <div className="rounded-[16px] border border-[rgba(0,0,0,0.1)] bg-white p-4 shadow-[rgba(0,0,0,0.04)_0px_4px_18px,rgba(0,0,0,0.027)_0px_2.025px_7.84688px,rgba(0,0,0,0.02)_0px_0.8px_2.925px,rgba(0,0,0,0.01)_0px_0.175px_1.04062px] sm:p-5">
-      <p className="text-xs font-semibold tracking-[0.125px] text-[#a39e98]">TIMER TYPE</p>
+      <p className="text-xs font-semibold tracking-[0.125px] text-[#a39e98]">{pref.dictionary.pomodoroSection.timerType}</p>
 
       <div className="relative mt-2">
         <select
@@ -35,15 +37,13 @@ export function TimerTypePanel({
         </select>
         <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-[#615d59]" />
       </div>
-
       <p className="mt-2 text-xs text-[#615d59]">
-        {timerTypes.find((timerType) => timerType.id === selectedTimerTypeId)?.name ?? "Select a timer type"}{" "}
-        lets you stay in rhythm.
+        {timerTypes.find((timerType) => timerType.id === selectedTimerTypeId)?.name ?? pref.dictionary.pomodoroSection.selectTimerType}
       </p>
 
       <Button type="button" variant="outline" className="mt-4 w-full" onClick={onOpenAddDialog}>
         <Plus className="size-4" />
-        Add timer type
+        {pref.dictionary.pomodoroSection.addTimerType}
       </Button>
     </div>
   );

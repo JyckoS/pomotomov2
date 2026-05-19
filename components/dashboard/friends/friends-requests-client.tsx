@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ConfirmActionDialog } from "@/components/dashboard/friends/confirm-action-dialog";
 import { UserAvatar } from "@/components/dashboard/friends/user-avatar";
 import { Button } from "@/components/ui/button";
+import { usePreferences } from "@/components/preferences/preferences-provider";
 
 type RequestItem = {
   friendshipId: string;
@@ -35,6 +36,7 @@ function formatRequestTime(createdAt: string) {
 }
 
 export function FriendsRequestsClient() {
+  const { dictionary: dict } = usePreferences();
   const [payload, setPayload] = useState<RequestsPayload | null>(null);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -57,7 +59,7 @@ export function FriendsRequestsClient() {
       if (cancelled) return;
 
       if (!response || !response.ok) {
-        setError("Unable to load friend requests right now.");
+        setError(dict.friendsSection.requestsError);
         setLoading(false);
         return;
       }
@@ -94,7 +96,7 @@ export function FriendsRequestsClient() {
 
     if (!response || !response.ok) {
       const data = await response?.json().catch(() => null);
-      setError(data?.error ?? "Unable to perform request action.");
+      setError(data?.error ?? dict.friendsSection.requestActionError);
       setSubmittingAction(false);
       return;
     }
@@ -111,17 +113,17 @@ export function FriendsRequestsClient() {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-[22px] leading-[1.27] tracking-[-0.25px] text-[rgba(0,0,0,0.95)]">Requests</h3>
-        <p className="text-sm text-[#615d59]">Review incoming and outgoing friend requests.</p>
+        <h3 className="text-[22px] leading-[1.27] tracking-[-0.25px] text-[rgba(0,0,0,0.95)]">{dict.friendsSection.requestsTitle}</h3>
+        <p className="text-sm text-[#615d59]">{dict.friendsSection.requestsDescription}</p>
       </div>
 
       {error ? <p className="text-sm text-[#dd5b00]">{error}</p> : null}
-      {loading && !payload ? <p className="text-sm text-[#615d59]">Loading requests...</p> : null}
+      {loading && !payload ? <p className="text-sm text-[#615d59]">{dict.friendsSection.loadingRequests}</p> : null}
 
       <div className="space-y-2">
-        <h4 className="text-sm font-semibold text-[rgba(0,0,0,0.95)]">Incoming</h4>
+        <h4 className="text-sm font-semibold text-[rgba(0,0,0,0.95)]">{dict.friendsSection.incoming}</h4>
         {!loading && payload && payload.incoming.length === 0 ? (
-          <p className="text-sm text-[#615d59]">No incoming requests.</p>
+          <p className="text-sm text-[#615d59]">{dict.friendsSection.noIncoming}</p>
         ) : null}
         {payload?.incoming.map((request) => (
           <div
@@ -132,7 +134,7 @@ export function FriendsRequestsClient() {
               <UserAvatar name={request.name} avatarSrc={request.avatarSrc} />
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-[rgba(0,0,0,0.95)]">{request.name}</p>
-                <p className="text-xs text-[#615d59]">Requested at {formatRequestTime(request.createdAt)}</p>
+                <p className="text-xs text-[#615d59]">{dict.friendsSection.requestedAt.replace("{{value}}", formatRequestTime(request.createdAt))}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -146,7 +148,7 @@ export function FriendsRequestsClient() {
                   })
                 }
               >
-                Accept
+                {dict.friendsSection.accept}
               </Button>
               <Button
                 type="button"
@@ -159,7 +161,7 @@ export function FriendsRequestsClient() {
                   })
                 }
               >
-                Decline
+                {dict.friendsSection.decline}
               </Button>
               <Button
                 type="button"
@@ -172,7 +174,7 @@ export function FriendsRequestsClient() {
                   })
                 }
               >
-                Block
+                {dict.friendsSection.block}
               </Button>
             </div>
           </div>
@@ -180,9 +182,9 @@ export function FriendsRequestsClient() {
       </div>
 
       <div className="space-y-2">
-        <h4 className="text-sm font-semibold text-[rgba(0,0,0,0.95)]">Outgoing</h4>
+        <h4 className="text-sm font-semibold text-[rgba(0,0,0,0.95)]">{dict.friendsSection.outgoing}</h4>
         {!loading && payload && payload.outgoing.length === 0 ? (
-          <p className="text-sm text-[#615d59]">No outgoing requests.</p>
+          <p className="text-sm text-[#615d59]">{dict.friendsSection.noOutgoing}</p>
         ) : null}
         {payload?.outgoing.map((request) => (
           <div
@@ -193,10 +195,10 @@ export function FriendsRequestsClient() {
               <UserAvatar name={request.name} avatarSrc={request.avatarSrc} />
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-[rgba(0,0,0,0.95)]">{request.name}</p>
-                <p className="text-xs text-[#615d59]">Sent at {formatRequestTime(request.createdAt)}</p>
+                <p className="text-xs text-[#615d59]">{dict.friendsSection.sentAt.replace("{{value}}", formatRequestTime(request.createdAt))}</p>
               </div>
             </div>
-            <span className="rounded-full bg-[#f6f5f4] px-2 py-1 text-xs font-semibold text-[#615d59]">Pending</span>
+            <span className="rounded-full bg-[#f6f5f4] px-2 py-1 text-xs font-semibold text-[#615d59]">{dict.friendsSection.pendingBadge}</span>
           </div>
         ))}
       </div>
@@ -204,10 +206,10 @@ export function FriendsRequestsClient() {
       {payload ? (
         <div className="flex items-center justify-end gap-2">
           <Button type="button" variant="outline" disabled={page <= 1} onClick={() => setPage((prev) => prev - 1)}>
-            Previous
+            {dict.common.previous}
           </Button>
           <Button type="button" variant="outline" disabled={!hasNextPage} onClick={() => setPage((prev) => prev + 1)}>
-            Next
+            {dict.common.next}
           </Button>
         </div>
       ) : null}
@@ -220,26 +222,26 @@ export function FriendsRequestsClient() {
         loading={submittingAction}
         title={
           pendingAction?.type === "accept"
-            ? "Accept request?"
+            ? dict.friendsSection.acceptRequestTitle
             : pendingAction?.type === "decline"
-              ? "Decline request?"
-              : "Block user?"
+              ? dict.friendsSection.declineRequestTitle
+              : dict.friendsSection.blockUserTitle
         }
         description={
           pendingAction?.type === "accept"
-            ? `Accept friend request from ${pendingAction.userName}?`
+            ? dict.friendsSection.acceptRequestDescription.replace("{{name}}", pendingAction.userName)
             : pendingAction?.type === "decline"
-              ? `Decline friend request from ${pendingAction.userName}?`
+              ? dict.friendsSection.declineRequestDescription.replace("{{name}}", pendingAction.userName)
               : pendingAction
-                ? `Block ${pendingAction.userName}? You can unblock later from Search.`
+                ? dict.friendsSection.blockUserDescription.replace("{{name}}", pendingAction.userName)
                 : ""
         }
         confirmLabel={
           pendingAction?.type === "accept"
-            ? "Accept"
+            ? dict.friendsSection.accept
             : pendingAction?.type === "decline"
-              ? "Decline"
-              : "Block"
+              ? dict.friendsSection.decline
+              : dict.friendsSection.block
         }
         confirmVariant={pendingAction?.type === "block" ? "destructive" : "default"}
         onConfirm={() => void runAction()}

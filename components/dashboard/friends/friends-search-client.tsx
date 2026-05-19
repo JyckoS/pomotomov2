@@ -5,6 +5,7 @@ import { type FormEvent, useEffect, useState } from "react";
 import { UserAvatar } from "@/components/dashboard/friends/user-avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { usePreferences } from "@/components/preferences/preferences-provider";
 
 type SearchItem = {
   userId: string;
@@ -28,6 +29,7 @@ type SearchPayload = {
 };
 
 export function FriendsSearchClient() {
+  const { dictionary: dict } = usePreferences();
   const [queryInput, setQueryInput] = useState("");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -57,7 +59,7 @@ export function FriendsSearchClient() {
       if (cancelled) return;
 
       if (!response || !response.ok) {
-        setError("Unable to search users right now.");
+        setError(dict.friendsSection.searchError);
         setPayload(null);
         setLoading(false);
         return;
@@ -83,7 +85,7 @@ export function FriendsSearchClient() {
 
     if (!response || !response.ok) {
       const data = await response?.json().catch(() => null);
-      throw new Error(data?.error ?? "Unable to perform action.");
+      throw new Error(data?.error ?? dict.friendsSection.actionError);
     }
   };
 
@@ -103,7 +105,7 @@ export function FriendsSearchClient() {
 
       setReloadToken((value) => value + 1);
     } catch (actionError) {
-      const message = actionError instanceof Error ? actionError.message : "Unable to perform action.";
+      const message = actionError instanceof Error ? actionError.message : dict.friendsSection.actionError;
       setError(message);
     } finally {
       setActingUserId(null);
@@ -118,7 +120,7 @@ export function FriendsSearchClient() {
       await performAction({ action: "block_user", targetUserId: userId });
       setReloadToken((value) => value + 1);
     } catch (actionError) {
-      const message = actionError instanceof Error ? actionError.message : "Unable to block user.";
+      const message = actionError instanceof Error ? actionError.message : dict.friendsSection.blockError;
       setError(message);
     } finally {
       setActingUserId(null);
@@ -136,42 +138,40 @@ export function FriendsSearchClient() {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-[22px] leading-[1.27] tracking-[-0.25px] text-[rgba(0,0,0,0.95)]">Search</h3>
-        <p className="text-sm text-[#615d59]">Find users by name, then send request, block, or unblock.</p>
+        <h3 className="text-[22px] leading-[1.27] tracking-[-0.25px] text-[rgba(0,0,0,0.95)]">{dict.friendsSection.searchTitle}</h3>
+        <p className="text-sm text-[#615d59]">{dict.friendsSection.searchDescription}</p>
       </div>
 
       <form className="flex gap-2" onSubmit={onSubmit}>
         <Input
           value={queryInput}
           onChange={(event) => setQueryInput(event.target.value)}
-          placeholder="Search by user name"
-          aria-label="Search users by name"
+          placeholder={dict.friendsSection.searchPlaceholder}
+          aria-label={dict.friendsSection.searchAria}
         />
-        <Button type="submit">Search</Button>
+        <Button type="submit">{dict.friendsSection.searchTitle}</Button>
       </form>
 
       {error ? <p className="text-sm text-[#dd5b00]">{error}</p> : null}
-      {loading && !payload ? <p className="text-sm text-[#615d59]">Searching...</p> : null}
+      {loading && !payload ? <p className="text-sm text-[#615d59]">{dict.friendsSection.searching}</p> : null}
       {!loading && query && payload && payload.items.length === 0 ? (
-        <p className="text-sm text-[#615d59]">
-          No users found for <span className="font-semibold">{query}</span>.
-        </p>
+        <p className="text-sm text-[#615d59]">{dict.friendsSection.noSearchResults.replace("{{query}}", query)}</p>
       ) : null}
 
       <div className="space-y-2">
         {payload?.items.map((item) => {
           const primaryLabel =
             item.relationshipState === "blocked_by_you"
-              ? "Unblock"
+              ? dict.friendsSection.unblock
               : item.relationshipState === "none"
-                ? "Send Request"
+                ? dict.friendsSection.sendRequest
                 : item.relationshipState === "blocked_by_them"
-                  ? "Blocked You"
+                  ? dict.friendsSection.blockedYou
                   : item.relationshipState === "friend"
-                    ? "Friend"
+                    ? dict.friendsSection.friend
                     : item.relationshipState === "outgoing_pending"
-                      ? "Requested"
-                      : "Pending";
+                      ? dict.friendsSection.requested
+                      : dict.friendsSection.pending;
 
           const primaryDisabled =
             actingUserId === item.userId ||
@@ -206,7 +206,7 @@ export function FriendsSearchClient() {
                     disabled={actingUserId === item.userId}
                     onClick={() => void handleBlock(item.userId)}
                   >
-                    Block
+                    {dict.friendsSection.block}
                   </Button>
                 ) : null}
               </div>
@@ -217,8 +217,8 @@ export function FriendsSearchClient() {
 
       {payload ? (
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="outline" disabled={page <= 1} onClick={() => setPage((prev) => prev - 1)}>
-            Previous
+            <Button type="button" variant="outline" disabled={page <= 1} onClick={() => setPage((prev) => prev - 1)}>
+            {dict.common.previous}
           </Button>
           <Button
             type="button"
@@ -226,7 +226,7 @@ export function FriendsSearchClient() {
             disabled={!payload.hasNextPage}
             onClick={() => setPage((prev) => prev + 1)}
           >
-            Next
+            {dict.common.next}
           </Button>
         </div>
       ) : null}

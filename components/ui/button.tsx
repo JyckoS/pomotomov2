@@ -14,19 +14,19 @@ const buttonVariants = cva(
           "bg-[#0075de] text-white hover:bg-[#005bab] shadow-[0_1px_2px_rgba(0,0,0,0.05)]",
         // Whisper-weight border (1px solid rgba(0,0,0,0.1))
         outline:
-          "border-[rgba(0,0,0,0.1)] bg-white text-[rgba(0,0,0,0.95)] hover:bg-[#f6f5f4] shadow-[0_1px_2px_rgba(0,0,0,0.02)]",
+          "border-[rgba(0,0,0,0.1)] bg-white text-[rgba(0,0,0,0.95)] hover:bg-[#f6f5f4] shadow-[0_1px_2px_rgba(0,0,0,0.02)] dark:border-[rgba(255,255,255,0.14)] dark:bg-[#201f1d] dark:text-[rgba(255,255,255,0.95)] dark:hover:bg-[#2a2826]",
         // Translucent warm gray
         secondary:
-          "bg-[rgba(0,0,0,0.05)] text-[rgba(0,0,0,0.95)] hover:bg-[rgba(0,0,0,0.08)]",
+          "bg-[rgba(0,0,0,0.05)] text-[rgba(0,0,0,0.95)] hover:bg-[rgba(0,0,0,0.08)] dark:bg-[rgba(255,255,255,0.08)] dark:text-[rgba(255,255,255,0.95)] dark:hover:bg-[rgba(255,255,255,0.14)]",
         // Near-black text ghost button
         ghost:
-          "text-[rgba(0,0,0,0.95)] hover:bg-[rgba(0,0,0,0.05)]",
+          "text-[rgba(0,0,0,0.95)] hover:bg-[rgba(0,0,0,0.05)] dark:text-[rgba(255,255,255,0.95)] dark:hover:bg-[rgba(255,255,255,0.08)]",
         // Semantic accent colors
         destructive:
           "bg-[#ff64c8]/10 text-[#dd5b00] border border-[#dd5b00]/20 hover:bg-[#ff64c8]/20",
         // Primary Link Blue
         link: 
-          "text-[#0075de] underline-offset-4 hover:underline",
+          "text-[#0075de] underline-offset-4 hover:underline dark:text-[#62aef0]",
       },
       size: {
         // 8px base spacing unit

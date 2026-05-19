@@ -14,7 +14,7 @@ export default async function ProfilePicturePage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f6f5f4] px-4 py-10">
+    <main className="flex min-h-screen items-center justify-center bg-[#f6f5f4] px-4 py-10 dark:bg-[#12110f]">
       <AvatarEditor initialImageUrl={session.user.image ? "/api/profile/avatar" : null} />
     </main>
   );

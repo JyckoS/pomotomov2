@@ -4,13 +4,16 @@ import { and, asc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { pomodoroSettings, pomodoroTimerType } from "@/db/schema";
+import { getUserPreferences } from "@/lib/data-access/user-preferences";
+import { getDictionary } from "@/lib/preferences/i18n";
+import type { SupportedLanguage } from "@/types/preferences";
 
 const DEFAULT_TIMER_TYPES = [
-  { name: "Default", focusDurationMinutes: 25, breakDurationMinutes: 5 },
-  { name: "Long Focus", focusDurationMinutes: 45, breakDurationMinutes: 15 },
-  { name: "Deep Work", focusDurationMinutes: 50, breakDurationMinutes: 10 },
-  { name: "Deep Productivity", focusDurationMinutes: 52, breakDurationMinutes: 17 },
-  { name: "Ultra Focus", focusDurationMinutes: 90, breakDurationMinutes: 20 },
+  { nameKey: "default", focusDurationMinutes: 25, breakDurationMinutes: 5 },
+  { nameKey: "longFocus", focusDurationMinutes: 45, breakDurationMinutes: 15 },
+  { nameKey: "deepWork", focusDurationMinutes: 50, breakDurationMinutes: 10 },
+  { nameKey: "deepProductivity", focusDurationMinutes: 52, breakDurationMinutes: 17 },
+  { nameKey: "ultraFocus", focusDurationMinutes: 90, breakDurationMinutes: 20 },
 ] as const;
 
 const timerTypeSelection = {
@@ -35,12 +38,19 @@ export async function ensurePomodoroConfig(userId: string) {
     .orderBy(asc(pomodoroTimerType.createdAt), asc(pomodoroTimerType.id));
 
   if (timerTypes.length === 0) {
+    const userPrefs = await getUserPreferences({ userId });
+    const lang = userPrefs.languageMode === "auto" ? ("en" as SupportedLanguage) : (userPrefs.languageMode as SupportedLanguage);
+    const dict = getDictionary(lang);
+
     timerTypes = await db
       .insert(pomodoroTimerType)
       .values(
         DEFAULT_TIMER_TYPES.map((timerType) => ({
           userId,
-          name: timerType.name,
+          name:
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore -- runtime lookup into dictionary keys
+            dict.pomodoroSection.timerTypeNames[timerType.nameKey] ?? timerType.nameKey,
           focusDurationMinutes: timerType.focusDurationMinutes,
           breakDurationMinutes: timerType.breakDurationMinutes,
           isPreset: true,

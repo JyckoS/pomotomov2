@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createCroppedAvatarBlob } from "@/lib/avatar/crop-image";
+import { usePreferences } from "@/components/preferences/preferences-provider";
 
 const SUPPORTED_FILE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -20,6 +21,7 @@ function stopMediaStream(stream: MediaStream | null) {
 
 export function AvatarEditor({ initialImageUrl }: { initialImageUrl?: string | null }) {
   const router = useRouter();
+  const { dictionary: dict } = usePreferences();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -205,27 +207,25 @@ export function AvatarEditor({ initialImageUrl }: { initialImageUrl?: string | n
   }, [cropAreaPixels, imageSource, router]);
 
   return (
-    <div className="w-full max-w-xl rounded-[16px] border border-[rgba(0,0,0,0.1)] bg-white p-6 shadow-[rgba(0,0,0,0.04)_0px_4px_18px,rgba(0,0,0,0.027)_0px_2.025px_7.84688px,rgba(0,0,0,0.02)_0px_0.8px_2.925px,rgba(0,0,0,0.01)_0px_0.175px_1.04062px] sm:p-7">
+    <div className="w-full max-w-xl rounded-[16px] border border-[rgba(0,0,0,0.1)] bg-white p-6 shadow-[rgba(0,0,0,0.04)_0px_4px_18px,rgba(0,0,0,0.027)_0px_2.025px_7.84688px,rgba(0,0,0,0.02)_0px_0.8px_2.925px,rgba(0,0,0,0.01)_0px_0.175px_1.04062px] dark:border-[rgba(255,255,255,0.12)] dark:bg-[#171614] sm:p-7">
       <div className="mb-6 text-center">
-        <h3 className="text-[26px] font-bold leading-[1.23] tracking-[-0.625px] text-[rgba(0,0,0,0.95)]">
-          Choose your profile photo
+        <h3 className="text-[26px] font-bold leading-[1.23] tracking-[-0.625px] text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]">
+          {dict.profile.title}
         </h3>
-        <p className="mt-1 text-sm text-[#615d59]">
-          Upload or capture a photo, adjust the circle, then save.
-        </p>
+        <p className="mt-1 text-sm text-[#615d59] dark:text-[#bbb6af]">{dict.profile.subtitle}</p>
       </div>
 
       <div className="mb-5 flex justify-center">
-        <div className="size-24 overflow-hidden rounded-full border border-[rgba(0,0,0,0.1)] bg-[#f6f5f4]">
+        <div className="size-24 overflow-hidden rounded-full border border-[rgba(0,0,0,0.1)] bg-[#f6f5f4] dark:border-[rgba(255,255,255,0.12)] dark:bg-[#23211f]">
           {avatarPreviewUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={avatarPreviewUrl}
-              alt="Current avatar"
+              alt={dict.profile.currentAvatarAlt}
               className="size-full object-cover"
             />
           ) : (
-            <div className="flex size-full items-center justify-center text-[#a39e98]">
+            <div className="flex size-full items-center justify-center text-[#a39e98] dark:text-[#8f8a84]">
               <ImageIcon className="size-5" />
             </div>
           )}
@@ -235,12 +235,12 @@ export function AvatarEditor({ initialImageUrl }: { initialImageUrl?: string | n
       <div className="mb-4 grid gap-3 sm:grid-cols-2">
         <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
           <ImageIcon className="size-4" />
-          Upload image
+          {dict.profile.uploadImage}
         </Button>
 
         <Button type="button" variant="outline" onClick={openCamera}>
           <Camera className="size-4" />
-          Use camera
+          {dict.profile.useCamera}
         </Button>
 
         <Input
@@ -253,7 +253,7 @@ export function AvatarEditor({ initialImageUrl }: { initialImageUrl?: string | n
       </div>
 
       {isCameraOpen ? (
-        <div className="mb-4 rounded-[12px] border border-[rgba(0,0,0,0.1)] bg-[#f6f5f4] p-3">
+        <div className="mb-4 rounded-[12px] border border-[rgba(0,0,0,0.1)] bg-[#f6f5f4] p-3 dark:border-[rgba(255,255,255,0.12)] dark:bg-[#23211f]">
           <video
             ref={videoRef}
             className="h-[280px] w-full rounded-[8px] bg-black object-cover"
@@ -264,10 +264,10 @@ export function AvatarEditor({ initialImageUrl }: { initialImageUrl?: string | n
           <div className="mt-3 flex gap-2">
             <Button type="button" onClick={capturePhoto}>
               <Camera className="size-4" />
-              Capture photo
+              {dict.profile.capturePhoto}
             </Button>
             <Button type="button" variant="ghost" onClick={closeCamera}>
-              Close camera
+              {dict.profile.closeCamera}
             </Button>
           </div>
         </div>
@@ -292,8 +292,11 @@ export function AvatarEditor({ initialImageUrl }: { initialImageUrl?: string | n
           </div>
 
           <div className="mt-4 space-y-2">
-            <Label htmlFor="avatar-zoom" className="text-sm font-medium text-[rgba(0,0,0,0.95)]">
-              Zoom
+            <Label
+              htmlFor="avatar-zoom"
+              className="text-sm font-medium text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]"
+            >
+              {dict.profile.zoom}
             </Label>
             <Input
               id="avatar-zoom"
@@ -321,7 +324,7 @@ export function AvatarEditor({ initialImageUrl }: { initialImageUrl?: string | n
           disabled={!imageSource || !cropAreaPixels || isSubmitting}
         >
           <Save className="size-4" />
-          {isSubmitting ? "Saving..." : "Save avatar"}
+          {isSubmitting ? dict.profile.savingAvatar : dict.profile.saveAvatar}
         </Button>
 
         <Button
@@ -334,7 +337,7 @@ export function AvatarEditor({ initialImageUrl }: { initialImageUrl?: string | n
           }}
         >
           <RefreshCcw className="size-4" />
-          Reset
+          {dict.profile.reset}
         </Button>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import { Pause, Play, SkipForward } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { usePreferences } from "@/components/preferences/preferences-provider";
 
 import type { Phase, TimerType } from "@/types/pomodoro";
 import { formatTimer } from "@/lib/pomodoro/utils";
@@ -24,6 +25,7 @@ export function TimerDisplay({
   onToggleRunning: () => void;
   onSkip: () => void;
 }) {
+  const pref = usePreferences();
   const circleSize = 320;
   const strokeWidth = 14;
   const radius = (circleSize - strokeWidth) / 2;
@@ -37,7 +39,7 @@ export function TimerDisplay({
 
       <div className="relative flex flex-col items-center">
         <p className="rounded-full border border-[rgba(9,127,232,0.15)] bg-[#f2f9ff] px-3 py-1 text-xs font-semibold tracking-[0.125px] text-[#097fe8]">
-          {phase === "focus" ? "FOCUS TIME" : "BREAK TIME"}
+          {phase === "focus" ? pref.dictionary.pomodoroSection.focusTimeBadge : pref.dictionary.pomodoroSection.breakTimeBadge}
         </p>
 
         <div className="relative mt-4 flex items-center justify-center">
@@ -66,15 +68,17 @@ export function TimerDisplay({
 
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <p className="text-xs font-semibold tracking-[0.125px] text-[#a39e98]">
-              {phase === "focus" ? "Focus" : "Break"}
+              {phase === "focus" ? pref.dictionary.pomodoroSection.phaseFocus : pref.dictionary.pomodoroSection.phaseBreak}
             </p>
             <p className="mt-1 text-[48px] font-bold leading-[1.0] tracking-[-1.5px] text-[rgba(0,0,0,0.95)]">
               {formatTimer(timeLeftSeconds)}
             </p>
             <p className="mt-1 text-xs text-[#615d59]">
-              {selectedTimerType
-                ? `${selectedTimerType.focusDurationMinutes}m focus • ${selectedTimerType.breakDurationMinutes}m break`
-                : "No timer selected"}
+              {selectedTimerType ? (
+                `${selectedTimerType.focusDurationMinutes}m ${pref.dictionary.pomodoroSection.phaseFocus.toLowerCase()} • ${selectedTimerType.breakDurationMinutes}m ${pref.dictionary.pomodoroSection.phaseBreak.toLowerCase()}`
+              ) : (
+                pref.dictionary.pomodoroSection.noTimerSelected
+              )}
             </p>
           </div>
         </div>
@@ -87,11 +91,11 @@ export function TimerDisplay({
             className="min-w-[7.5rem]"
           >
             {isRunning ? <Pause className="size-4" /> : <Play className="size-4" />}
-            {isRunning ? "Pause" : "Continue"}
+            {isRunning ? pref.dictionary.pomodoroSection.pause : pref.dictionary.pomodoroSection.continue}
           </Button>
           <Button type="button" variant="outline" onClick={onSkip} disabled={!selectedTimerType}>
             <SkipForward className="size-4" />
-            {phase === "focus" ? "Skip to break" : "Skip to focus"}
+            {phase === "focus" ? pref.dictionary.pomodoroSection.skipToBreak : pref.dictionary.pomodoroSection.skipToFocus}
           </Button>
         </div>
       </div>
