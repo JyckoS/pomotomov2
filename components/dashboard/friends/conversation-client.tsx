@@ -157,20 +157,20 @@ export function ConversationClient({ conversationId }: { conversationId: string 
 
   return (
     <div className="space-y-4">
-      {loading && !payload ? <p className="text-sm text-[#615d59]">{dict.friendsSection.loadingConversation}</p> : null}
-      {error ? <p className="text-sm text-[#dd5b00]">{error}</p> : null}
+      {loading && !payload ? <p className="text-sm text-warm-gray-500 dark:text-[#bbb6af]">{dict.friendsSection.loadingConversation}</p> : null}
+      {error ? <p className="text-sm text-notion-orange dark:text-[#ff8f63]">{error}</p> : null}
 
       {payload ? (
         <div className="space-y-4">
-          <div className="flex items-center gap-3 border-b border-[rgba(0,0,0,0.1)] pb-3">
+          <div className="flex items-center gap-3 border-b border-[rgba(0,0,0,0.1)] pb-3 dark:border-[rgba(255,255,255,0.12)]">
             <UserAvatar name={payload.otherParticipant.name} avatarSrc={payload.otherParticipant.avatarSrc} />
             <div>
-              <p className="text-sm font-semibold text-[rgba(0,0,0,0.95)]">{payload.otherParticipant.name}</p>
-              <p className="text-xs text-[#615d59]">{dict.friendsSection.directConversation}</p>
+              <p className="text-sm font-semibold text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]">{payload.otherParticipant.name}</p>
+              <p className="text-xs text-warm-gray-500 dark:text-[#bbb6af]">{dict.friendsSection.directConversation}</p>
             </div>
           </div>
 
-          <div className="h-[55vh] space-y-3 overflow-y-auto rounded-[12px] border border-[rgba(0,0,0,0.1)] bg-[#f8f9fb] p-3">
+          <div className="h-[55vh] space-y-3 overflow-y-auto rounded-[12px] border border-[rgba(0,0,0,0.1)] bg-[#f8f9fb] p-3 dark:border-[rgba(255,255,255,0.12)] dark:bg-[#171614]">
             {payload.hasMore ? (
               <div className="flex justify-center">
                 <Button type="button" variant="outline" size="sm" onClick={() => void handleLoadOlder()} disabled={loadingOlder}>
@@ -180,7 +180,7 @@ export function ConversationClient({ conversationId }: { conversationId: string 
             ) : null}
 
             {sortedMessages.length === 0 ? (
-              <p className="text-center text-sm text-[#615d59]">{`${dict.friendsSection.noMessages} ${dict.friendsSection.startConversation}`}</p>
+              <p className="text-center text-sm text-warm-gray-500 dark:text-[#bbb6af]">{`${dict.friendsSection.noMessages} ${dict.friendsSection.startConversation}`}</p>
             ) : null}
 
             {sortedMessages.map((message) => {
@@ -196,12 +196,12 @@ export function ConversationClient({ conversationId }: { conversationId: string 
                   <div
                     className={`max-w-[70%] rounded-[18px] px-3 py-2 text-sm ${
                       isCurrentUser
-                        ? "rounded-br-[6px] bg-[#097fe8] text-white"
-                        : "rounded-bl-[6px] border border-[rgba(0,0,0,0.1)] bg-white text-[rgba(0,0,0,0.95)]"
+                        ? "rounded-br-md bg-badge-blue-text text-white"
+                          : "rounded-bl-md border border-[rgba(0,0,0,0.1)] bg-white text-[rgba(0,0,0,0.95)] dark:border-[rgba(255,255,255,0.12)] dark:bg-[#23211f] dark:text-[rgba(255,255,255,0.95)]"
                     }`}
                   >
-                    <p className="break-words">{message.content}</p>
-                    <p className={`mt-1 text-[10px] ${isCurrentUser ? "text-white/80" : "text-[#615d59]"}`}>
+                      <p className="wrap-break-word">{message.content}</p>
+                      <p className={`mt-1 text-[10px] ${isCurrentUser ? "text-white/80" : "text-warm-gray-500 dark:text-[#bbb6af]"}`}>
                       {formatMessageTime(message.createdAt)}
                     </p>
                   </div>

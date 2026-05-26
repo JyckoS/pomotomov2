@@ -76,7 +76,7 @@ export function FriendsListClient() {
     return () => {
       cancelled = true;
     };
-  }, [page]);
+  }, [dict.friendsSection.loadFriendsError, page]);
 
   const handleStartChat = async (friendUserId: string) => {
     setChattingWith(friendUserId);
@@ -102,29 +102,29 @@ export function FriendsListClient() {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-[22px] leading-[1.27] tracking-[-0.25px] text-[rgba(0,0,0,0.95)]">{dict.friendsSection.listTitle}</h3>
-        <p className="text-sm text-[#615d59]">{dict.friendsSection.listDescription}</p>
+        <h3 className="text-[22px] leading-[1.27] tracking-[-0.25px] text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]">{dict.friendsSection.listTitle}</h3>
+        <p className="text-sm text-[#615d59] dark:text-[#bbb6af]">{dict.friendsSection.listDescription}</p>
       </div>
 
-      {error ? <p className="text-sm text-[#dd5b00]">{error}</p> : null}
+      {error ? <p className="text-sm text-[#dd5b00] dark:text-[#ff8f63]">{error}</p> : null}
 
       <div className="space-y-2">
-        {loading && !payload ? <p className="text-sm text-[#615d59]">{dict.friendsSection.loadingFriends}</p> : null}
+        {loading && !payload ? <p className="text-sm text-[#615d59] dark:text-[#bbb6af]">{dict.friendsSection.loadingFriends}</p> : null}
         {!loading && payload && payload.items.length === 0 ? (
-          <p className="text-sm text-[#615d59]">{dict.friendsSection.noFriends}</p>
+          <p className="text-sm text-[#615d59] dark:text-[#bbb6af]">{dict.friendsSection.noFriends}</p>
         ) : null}
 
         {payload?.items.map((friend) => (
           <div
             key={friend.friendshipId}
-            className="flex w-full items-center justify-between rounded-[12px] border border-[rgba(0,0,0,0.1)] bg-white px-3 py-3"
+            className="flex w-full items-center justify-between rounded-[12px] border border-[rgba(0,0,0,0.1)] bg-white px-3 py-3 dark:border-[rgba(255,255,255,0.12)] dark:bg-[#171614]"
           >
             <div className="flex min-w-0 items-center gap-3">
               <UserAvatar name={friend.name} avatarSrc={friend.avatarSrc} />
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-[rgba(0,0,0,0.95)]">{friend.name}</p>
-                <p className="truncate text-xs text-[#a39e98]">{friend.status}</p>
-                <p className="text-xs text-[#615d59]">
+                <p className="truncate text-sm font-semibold text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]">{friend.name}</p>
+                <p className="truncate text-xs text-[#a39e98] dark:text-[#9e9993]">{friend.status}</p>
+                <p className="text-xs text-[#615d59] dark:text-[#bbb6af]">
                   {friend.isOnline ? dict.friendsSection.onlineNow : formatLastOnline(friend.lastHeartbeatAt, dict)}
                 </p>
               </div>
@@ -155,7 +155,7 @@ export function FriendsListClient() {
 
       {payload ? (
         <div className="flex items-center justify-between pt-1">
-          <p className="text-xs text-[#615d59]">
+          <p className="text-xs text-[#615d59] dark:text-[#bbb6af]">
             {dict.friendsSection.showing} {(payload.page - 1) * payload.pageSize + 1}
             {" - "}
             {Math.min(payload.page * payload.pageSize, payload.total)} {dict.friendsSection.of} {payload.total}

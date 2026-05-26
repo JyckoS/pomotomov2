@@ -30,13 +30,13 @@ export function PomodoroClient() {
   const pref = usePreferences();
   return (
     <div className="mx-auto w-full max-w-5xl">
-      <div className="relative rounded-[16px] border border-[rgba(0,0,0,0.1)] bg-gradient-to-b from-white to-[#f6f9fc] p-4 shadow-[rgba(0,0,0,0.04)_0px_4px_18px,rgba(0,0,0,0.027)_0px_2.025px_7.84688px,rgba(0,0,0,0.02)_0px_0.8px_2.925px,rgba(0,0,0,0.01)_0px_0.175px_1.04062px] sm:p-6">
+      <div className="relative rounded-[16px] border border-[rgba(0,0,0,0.1)] bg-gradient-to-b from-white to-[#f6f9fc] p-4 shadow-[rgba(0,0,0,0.04)_0px_4px_18px,rgba(0,0,0,0.027)_0px_2.025px_7.84688px,rgba(0,0,0,0.02)_0px_0.8px_2.925px,rgba(0,0,0,0.01)_0px_0.175px_1.04062px] dark:border-[rgba(255,255,255,0.12)] dark:bg-gradient-to-b dark:from-[#171614] dark:to-[#12110f] dark:shadow-[rgba(0,0,0,0.35)_0px_4px_18px,rgba(0,0,0,0.22)_0px_2.025px_7.84688px,rgba(0,0,0,0.16)_0px_0.8px_2.925px,rgba(0,0,0,0.12)_0px_0.175px_1.04062px] sm:p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h3 className="text-[26px] font-bold leading-[1.23] tracking-[-0.625px] text-[rgba(0,0,0,0.95)]">
+            <h3 className="text-[26px] font-bold leading-[1.23] tracking-[-0.625px] text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]">
               {pref.dictionary.pomodoroSection.title}
             </h3>
-            <p className="mt-1 text-sm text-[#615d59]">{pref.dictionary.pomodoroSection.subtitle}</p>
+            <p className="mt-1 text-sm text-[#615d59] dark:text-[#bbb6af]">{pref.dictionary.pomodoroSection.subtitle}</p>
           </div>
           <PomodoroSettingsDialog
             settings={settings}

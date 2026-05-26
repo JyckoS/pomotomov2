@@ -32,10 +32,10 @@ export function PomodoroSettingsDialog({
         </DialogHeader>
 
         <div className="space-y-4">
-          <label className="flex items-center justify-between gap-3 rounded-[8px] border border-[rgba(0,0,0,0.1)] p-3">
+          <label className="flex items-center justify-between gap-3 rounded-[8px] border border-[rgba(0,0,0,0.1)] bg-white p-3 dark:border-[rgba(255,255,255,0.12)] dark:bg-[#171614]">
             <div className="space-y-1">
-              <p className="text-[15px] font-semibold text-[rgba(0,0,0,0.95)]">{pref.dictionary.pomodoroSection.autoStartBreak}</p>
-              <p className="text-xs text-[#615d59]">{pref.dictionary.pomodoroSection.autoStartBreakDescription}</p>
+              <p className="text-[15px] font-semibold text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]">{pref.dictionary.pomodoroSection.autoStartBreak}</p>
+              <p className="text-xs text-[#615d59] dark:text-[#bbb6af]">{pref.dictionary.pomodoroSection.autoStartBreakDescription}</p>
             </div>
             <input
               type="checkbox"
@@ -45,10 +45,10 @@ export function PomodoroSettingsDialog({
             />
           </label>
 
-          <label className="flex items-center justify-between gap-3 rounded-[8px] border border-[rgba(0,0,0,0.1)] p-3">
+          <label className="flex items-center justify-between gap-3 rounded-[8px] border border-[rgba(0,0,0,0.1)] bg-white p-3 dark:border-[rgba(255,255,255,0.12)] dark:bg-[#171614]">
             <div className="space-y-1">
-              <p className="text-[15px] font-semibold text-[rgba(0,0,0,0.95)]">{pref.dictionary.pomodoroSection.autoStartPomodoros}</p>
-              <p className="text-xs text-[#615d59]">{pref.dictionary.pomodoroSection.autoStartPomodorosDescription}</p>
+              <p className="text-[15px] font-semibold text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]">{pref.dictionary.pomodoroSection.autoStartPomodoros}</p>
+              <p className="text-xs text-[#615d59] dark:text-[#bbb6af]">{pref.dictionary.pomodoroSection.autoStartPomodorosDescription}</p>
             </div>
             <input
               type="checkbox"
@@ -58,7 +58,7 @@ export function PomodoroSettingsDialog({
             />
           </label>
 
-          {settingsError ? <p className="text-sm text-[#dd5b00]">{settingsError}</p> : null}
+          {settingsError ? <p className="text-sm text-[#dd5b00] dark:text-[#ff8f63]">{settingsError}</p> : null}
         </div>
       </DialogContent>
     </Dialog>

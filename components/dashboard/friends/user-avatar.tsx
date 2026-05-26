@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 type UserAvatarProps = {
   name: string;
   avatarSrc: string | null;
@@ -9,7 +11,10 @@ export function UserAvatar({ name, avatarSrc, sizeClassName = "size-10" }: UserA
 
   return (
     <div
-      className={`${sizeClassName} shrink-0 overflow-hidden rounded-full border border-[rgba(0,0,0,0.1)] bg-[#f6f5f4] flex items-center justify-center text-sm font-semibold text-[#615d59]`}
+      className={cn(
+        sizeClassName,
+        "shrink-0 overflow-hidden rounded-full border border-[rgba(0,0,0,0.1)] bg-warm-white flex items-center justify-center text-sm font-semibold text-warm-gray-500 dark:border-[rgba(255,255,255,0.12)] dark:bg-[#23211f] dark:text-[#bbb6af]",
+      )}
     >
       {avatarSrc ? (
         // eslint-disable-next-line @next/next/no-img-element

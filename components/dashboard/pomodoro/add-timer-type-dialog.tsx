@@ -89,7 +89,7 @@ export function AddTimerTypeDialog({
 
         <form onSubmit={handleCreateTimerType} className="grid gap-3">
           <div className="grid gap-1.5">
-            <Label htmlFor="timer-name" className="text-xs font-semibold text-[#615d59]">
+            <Label htmlFor="timer-name" className="text-xs font-semibold text-[#615d59] dark:text-[#bbb6af]">
               {pref.dictionary.pomodoroSection.timerName}
             </Label>
             <Input
@@ -102,7 +102,7 @@ export function AddTimerTypeDialog({
 
           <div className="grid grid-cols-2 gap-3">
             <div className="grid gap-1.5">
-              <Label htmlFor="focus-duration" className="text-xs font-semibold text-[#615d59]">
+              <Label htmlFor="focus-duration" className="text-xs font-semibold text-[#615d59] dark:text-[#bbb6af]">
                 {pref.dictionary.pomodoroSection.focusMins}
               </Label>
               <Input
@@ -115,7 +115,7 @@ export function AddTimerTypeDialog({
               />
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="break-duration" className="text-xs font-semibold text-[#615d59]">
+              <Label htmlFor="break-duration" className="text-xs font-semibold text-[#615d59] dark:text-[#bbb6af]">
                 {pref.dictionary.pomodoroSection.breakMins}
               </Label>
               <Input
@@ -129,7 +129,7 @@ export function AddTimerTypeDialog({
             </div>
           </div>
 
-          {createTimerError ? <p className="text-sm text-[#dd5b00]">{createTimerError}</p> : null}
+          {createTimerError ? <p className="text-sm text-[#dd5b00] dark:text-[#ff8f63]">{createTimerError}</p> : null}
 
           <Button type="submit" disabled={isCreatingTimerType}>
             {isCreatingTimerType ? pref.dictionary.pomodoroSection.savingTimer : pref.dictionary.pomodoroSection.addTimerType}

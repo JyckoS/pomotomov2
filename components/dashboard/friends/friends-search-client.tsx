@@ -138,8 +138,8 @@ export function FriendsSearchClient() {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-[22px] leading-[1.27] tracking-[-0.25px] text-[rgba(0,0,0,0.95)]">{dict.friendsSection.searchTitle}</h3>
-        <p className="text-sm text-[#615d59]">{dict.friendsSection.searchDescription}</p>
+        <h3 className="text-[22px] leading-[1.27] tracking-[-0.25px] text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]">{dict.friendsSection.searchTitle}</h3>
+        <p className="text-sm text-[#615d59] dark:text-[#bbb6af]">{dict.friendsSection.searchDescription}</p>
       </div>
 
       <form className="flex gap-2" onSubmit={onSubmit}>
@@ -152,10 +152,10 @@ export function FriendsSearchClient() {
         <Button type="submit">{dict.friendsSection.searchTitle}</Button>
       </form>
 
-      {error ? <p className="text-sm text-[#dd5b00]">{error}</p> : null}
-      {loading && !payload ? <p className="text-sm text-[#615d59]">{dict.friendsSection.searching}</p> : null}
+      {error ? <p className="text-sm text-[#dd5b00] dark:text-[#ff8f63]">{error}</p> : null}
+      {loading && !payload ? <p className="text-sm text-[#615d59] dark:text-[#bbb6af]">{dict.friendsSection.searching}</p> : null}
       {!loading && query && payload && payload.items.length === 0 ? (
-        <p className="text-sm text-[#615d59]">{dict.friendsSection.noSearchResults.replace("{{query}}", query)}</p>
+        <p className="text-sm text-[#615d59] dark:text-[#bbb6af]">{dict.friendsSection.noSearchResults.replace("{{query}}", query)}</p>
       ) : null}
 
       <div className="space-y-2">
@@ -183,11 +183,11 @@ export function FriendsSearchClient() {
           return (
             <div
               key={item.userId}
-              className="flex w-full items-center justify-between rounded-[12px] border border-[rgba(0,0,0,0.1)] bg-white px-3 py-3"
+              className="flex w-full items-center justify-between rounded-[12px] border border-[rgba(0,0,0,0.1)] bg-white px-3 py-3 dark:border-[rgba(255,255,255,0.12)] dark:bg-[#171614]"
             >
               <div className="flex min-w-0 items-center gap-3">
                 <UserAvatar name={item.name} avatarSrc={item.avatarSrc} />
-                <p className="truncate text-sm font-semibold text-[rgba(0,0,0,0.95)]">{item.name}</p>
+                <p className="truncate text-sm font-semibold text-[rgba(0,0,0,0.95)] dark:text-[rgba(255,255,255,0.95)]">{item.name}</p>
               </div>
 
               <div className="flex items-center gap-2">

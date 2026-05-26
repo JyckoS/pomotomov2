@@ -9,7 +9,7 @@ export default function ConversationPage() {
   const conversationId = params?.conversationId;
 
   if (!conversationId) {
-    return <p className="text-sm text-[#dd5b00]">Conversation was not found.</p>;
+    return <p className="text-sm text-notion-orange dark:text-[#ff8f63]">Conversation was not found.</p>;
   }
 
   return <ConversationClient conversationId={conversationId} />;
