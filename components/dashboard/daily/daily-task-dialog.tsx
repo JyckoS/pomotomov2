@@ -15,25 +15,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { usePreferences } from "@/components/preferences/preferences-provider";
+import { getDailyIconTone, getDailySwatchSurface } from "@/lib/daily/color";
 import { DAILY_COLOR_PRESETS, DAILY_ICON_PRESETS, DEFAULT_DAILY_COLOR, DEFAULT_DAILY_ICON } from "@/lib/daily/presets";
-import { getDailyIconTone, getDailySwatchSurface, mixHexColor } from "@/lib/daily/color";
 import { cn } from "@/lib/utils";
-
-function formatClockValue(hour: number, minute: number) {
-  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-}
-
-function parseClockValue(value: string) {
-  const [hourPart, minutePart] = value.split(":");
-  const hour = Number(hourPart);
-  const minute = Number(minutePart);
-
-  if (Number.isNaN(hour) || Number.isNaN(minute)) {
-    return { hour: null, minute: null };
-  }
-
-  return { hour, minute };
-}
+import {
+  COLOR_PICKER_SCROLL_CLASS,
+  DAILY_ICON_LABEL_FALLBACKS,
+  ICON_PICKER_SCROLL_CLASS,
+  PARENT_OPTIONS_PANEL_CLASS,
+  TIME_HOUR_VALUES,
+  TIME_MINUTE_VALUES,
+  TIME_PICKER_PANEL_CLASS,
+  formatClockValue,
+  parseClockValue,
+} from "./daily-task-dialog/constants";
+import { DailyColorSwatch } from "./daily-task-dialog/daily-color-swatch";
+import { DailyIconSwatch } from "./daily-task-dialog/daily-icon-swatch";
+import { TimeWheelColumn } from "./daily-task-dialog/time-wheel-column";
 
 export type DailyTaskFormValues = {
   title: string;
@@ -50,14 +48,6 @@ export type DailyTaskOption = {
   depth: number;
 };
 
-const TIME_HOUR_VALUES = Array.from({ length: 24 }, (_, index) => index);
-const TIME_MINUTE_VALUES = Array.from({ length: 60 }, (_, index) => index);
-const PARENT_OPTIONS_PANEL_CLASS =
-  "max-h-44 space-y-2 overflow-y-auto rounded-[8px] border border-[rgba(0,0,0,0.1)] p-2 dark:border-[rgba(255,255,255,0.14)]";
-const COLOR_PICKER_SCROLL_CLASS = "max-h-40 overflow-y-auto pr-1";
-const ICON_PICKER_SCROLL_CLASS = "max-h-40 overflow-y-auto pr-1";
-const TIME_PICKER_PANEL_CLASS = "space-y-2 rounded-[10px] border border-[rgba(0,0,0,0.1)] p-2 dark:border-[rgba(255,255,255,0.14)]";
-
 type DailyTaskDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -70,147 +60,6 @@ type DailyTaskDialogProps = {
   isSaving: boolean;
   isDeleting?: boolean;
 };
-
-const DAILY_ICON_LABEL_FALLBACKS = [
-  "Document",
-  "Checklist",
-  "Calendar",
-  "Clock",
-  "Todo",
-  "Sparkles",
-  "Book",
-  "Briefcase",
-  "Brain",
-  "Goal",
-  "Heart",
-  "Lightbulb",
-  "Clipboard",
-  "Star",
-  "Sun",
-  "Moon",
-  "Shield",
-  "Target",
-  "Rocket",
-  "Flower",
-  "Pine Tree",
-  "Flame",
-  "Bell",
-  "Message",
-  "Pencil",
-  "Folder",
-  "Archive",
-  "Badge",
-  "Check",
-  "Wand",
-] as const;
-
-// Renders a single color swatch for the palette chooser.
-function DailyColorSwatch({ color, selected, isDarkMode, onSelect }: { color: string; selected: boolean; isDarkMode: boolean; onSelect: () => void }) {
-  const surface = getDailySwatchSurface(color, isDarkMode);
-  const iconTone = mixHexColor(color, isDarkMode ? "#ffffff" : "#000000", isDarkMode ? 0.34 : 0.22);
-
-  return (
-    <button
-      type="button"
-      onClick={onSelect}
-      className={cn(
-        "flex aspect-square items-center justify-center rounded-[10px] border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-badge-blue-text",
-        selected
-          ? "scale-[0.985] border-badge-blue-text ring-2 ring-badge-blue-text/20"
-          : "border-[rgba(0,0,0,0.1)] hover:-translate-y-0.5 hover:shadow-[rgba(0,0,0,0.04)_0px_4px_18px] dark:border-[rgba(255,255,255,0.14)]",
-      )}
-      style={{ backgroundColor: surface, color: iconTone }}
-      aria-pressed={selected}
-    >
-      <span className="sr-only">{color}</span>
-    </button>
-  );
-}
-
-// Renders a single icon swatch for the icon chooser.
-function DailyIconSwatch({
-  iconName,
-  label,
-  selected,
-  color,
-  isDarkMode,
-  onSelect,
-}: {
-  iconName: string;
-  label: string;
-  selected: boolean;
-  color: string;
-  isDarkMode: boolean;
-  onSelect: () => void;
-}) {
-  const iconPreset = DAILY_ICON_PRESETS.find((preset) => preset.name === iconName) ?? DAILY_ICON_PRESETS[0];
-  const Icon = iconPreset?.icon ?? FileText;
-  const tone = getDailyIconTone(color, isDarkMode);
-
-  return (
-    <button
-      type="button"
-      onClick={onSelect}
-      className={cn(
-        "flex flex-col items-center justify-center gap-2 rounded-[10px] border px-2 py-3 text-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-badge-blue-text",
-        selected
-          ? "border-badge-blue-text bg-badge-blue-bg ring-2 ring-badge-blue-text/20 dark:bg-[#13263a]"
-          : "border-[rgba(0,0,0,0.1)] bg-white hover:-translate-y-0.5 hover:shadow-[rgba(0,0,0,0.04)_0px_4px_18px] dark:border-[rgba(255,255,255,0.14)] dark:bg-[#201f1d]",
-      )}
-      style={{ color: tone }}
-      aria-pressed={selected}
-    >
-      <Icon className="size-5" />
-      <span className="truncate text-[11px] font-medium text-warm-gray-500 dark:text-[#bab6b1]">{label}</span>
-    </button>
-  );
-}
-
-// Converts a stored HH:MM string into numeric clock parts.
-function TimeWheelColumn({
-  label,
-  values,
-  selectedValue,
-  onSelect,
-}: {
-  label: string;
-  values: number[];
-  selectedValue: number | null;
-  onSelect: (value: number) => void;
-}) {
-  return (
-    <div className="space-y-2">
-      <p className="text-[12px] font-semibold uppercase tracking-[0.125px] text-warm-gray-300 dark:text-[#9e9993]">{label}</p>
-      <div className="max-h-44 overflow-y-auto rounded-[10px] border border-[rgba(0,0,0,0.1)] p-1.5 dark:border-[rgba(255,255,255,0.14)]">
-        <div className="grid grid-cols-1 gap-1">
-          {values.map((value) => {
-            const isSelected = selectedValue === value;
-
-            return (
-              <button
-                key={value}
-                type="button"
-                onClick={() => onSelect(value)}
-                className={cn(
-                  "rounded-[8px] px-3 py-2 text-center text-sm font-medium transition-colors",
-                  isSelected
-                    ? "bg-badge-blue-bg text-badge-blue-text dark:bg-[#13263a] dark:text-[#97c8f5]"
-                    : "text-warm-gray-500 hover:bg-warm-white dark:text-warm-gray-300 dark:hover:bg-[#23211f]",
-                )}
-              >
-                {String(value).padStart(2, "0")}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function getSelectedIconLabel(selectedIconIndex: number, dict: ReturnType<typeof usePreferences>["dictionary"]) {
-  return dict.dailySection.iconLabels[selectedIconIndex] ?? DAILY_ICON_LABEL_FALLBACKS[selectedIconIndex] ?? dict.dailySection.defaultIcon;
-}
 
 export function DailyTaskDialog({
   open,
@@ -226,6 +75,7 @@ export function DailyTaskDialog({
 }: DailyTaskDialogProps) {
   const { dictionary: dict, effectiveTheme } = usePreferences();
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
+  const isDarkMode = effectiveTheme === "dark";
 
   const selectedColor = values.color || DEFAULT_DAILY_COLOR;
   const selectedIconName = values.iconName || DEFAULT_DAILY_ICON;
@@ -234,7 +84,7 @@ export function DailyTaskDialog({
   const SelectedIcon = selectedIcon?.icon ?? FileText;
   const taskTitle = values.title.trim();
   const selectedIconIndex = DAILY_ICON_PRESETS.findIndex((preset) => preset.name === selectedIconName);
-  const selectedIconLabel = getSelectedIconLabel(selectedIconIndex, dict);
+  const selectedIconLabel = dict.dailySection.iconLabels[selectedIconIndex] ?? DAILY_ICON_LABEL_FALLBACKS[selectedIconIndex] ?? dict.dailySection.defaultIcon;
   const timeButtonLabel = values.toCompleteBefore ? values.toCompleteBefore : dict.dailySection.noTimeSelected;
   const isFormValid = taskTitle.length > 0;
 
@@ -390,8 +240,8 @@ export function DailyTaskDialog({
                   <div
                     className="flex size-12 items-center justify-center rounded-[12px] border border-[rgba(0,0,0,0.08)]"
                     style={{
-                      backgroundColor: getDailySwatchSurface(selectedColor, effectiveTheme === "dark"),
-                      color: getDailyIconTone(selectedColor, effectiveTheme === "dark"),
+                      backgroundColor: getDailySwatchSurface(selectedColor, isDarkMode),
+                      color: getDailyIconTone(selectedColor, isDarkMode),
                     }}
                   >
                     <SelectedIcon className="size-5" />
@@ -418,15 +268,15 @@ export function DailyTaskDialog({
                 </div>
                 <div className={COLOR_PICKER_SCROLL_CLASS}>
                   <div className="grid grid-cols-5 gap-2">
-                  {DAILY_COLOR_PRESETS.map((preset) => (
-                    <DailyColorSwatch
-                      key={preset.value}
-                      color={preset.value}
-                      selected={values.color === preset.value}
-                      isDarkMode={effectiveTheme === "dark"}
-                      onSelect={() => onChange({ ...values, color: preset.value })}
-                    />
-                  ))}
+                    {DAILY_COLOR_PRESETS.map((preset) => (
+                      <DailyColorSwatch
+                        key={preset.value}
+                        color={preset.value}
+                        selected={values.color === preset.value}
+                        isDarkMode={isDarkMode}
+                        onSelect={() => onChange({ ...values, color: preset.value })}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
@@ -449,7 +299,7 @@ export function DailyTaskDialog({
                         selected={values.iconName === preset.name}
                         color={selectedColor}
                         label={dict.dailySection.iconLabels[index] ?? DAILY_ICON_LABEL_FALLBACKS[index] ?? preset.name}
-                        isDarkMode={effectiveTheme === "dark"}
+                        isDarkMode={isDarkMode}
                         onSelect={() => onChange({ ...values, iconName: preset.name })}
                       />
                     ))}
