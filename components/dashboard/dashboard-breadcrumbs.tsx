@@ -23,6 +23,9 @@ function translateSegment(segment: string, dict: I18nDictionary) {
   if (normalized === "search") return dict.friendsSection.searchTitle;
   if (normalized === "list") return dict.friendsSection.listTitle;
   if (normalized === "notes") return dict.common.notes;
+  if (normalized === "todo") return dict.common.todo;
+  if (normalized === "daily") return dict.common.daily;
+
   return formatSegment(segment);
 }
 

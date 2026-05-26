@@ -27,6 +27,8 @@ export type I18nDictionary = {
     pomodoro: string;
     notes: string;
     friends: string;
+    todo: string;
+    daily: string;
     previous: string;
     next: string;
   };
@@ -194,6 +196,71 @@ export type I18nDictionary = {
         ultraFocus: string,
       },
   };
+    dailySection: {
+      title: string;
+      subtitle: string;
+      addTask: string;
+      editTask: string;
+      taskTitle: string;
+      taskNotes: string;
+      taskNotesPlaceholder: string;
+      parentTask: string;
+      noParent: string;
+      dueTime: string;
+      color: string;
+      icon: string;
+      colorPickerTitle: string;
+      iconPickerTitle: string;
+      emptyTitle: string;
+      emptyDescription: string;
+      incompleteCount: string;
+      completedCount: string;
+      totalCount: string;
+      loading: string;
+      error: string;
+      deleteTask: string;
+      defaultColor: string;
+      defaultIcon: string;
+      chooseTime: string;
+      noTimeSelected: string;
+      clearTime: string;
+      timePickerTitle: string;
+      hourLabel: string;
+      minuteLabel: string;
+      iconLabels: [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+      ];
+      resetHint: string;
+    };
 };
 
 const dictionary: Record<SupportedLanguage, I18nDictionary> = {
@@ -225,6 +292,8 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
       notes: "Notes",
       friends: "Friends",
       previous: "Previous",
+      todo: "To Do",
+      daily: "Daily List",
       next: "Next",
     },
     signIn: {
@@ -402,6 +471,71 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
         ultraFocus: "Ultra Focus",
       },
     },
+    dailySection: {
+      title: "Daily List",
+      subtitle: "Template your day with nested tasks that reset every morning.",
+      addTask: "Add task",
+      editTask: "Edit task",
+      taskTitle: "Task title",
+      taskNotes: "Notes",
+      taskNotesPlaceholder: "Add a quick note, context, or reminder...",
+      parentTask: "Parent task",
+      noParent: "No parent",
+      dueTime: "Before time",
+      color: "Color",
+      icon: "Icon",
+      colorPickerTitle: "Pick a color",
+      iconPickerTitle: "Pick an icon",
+      emptyTitle: "No daily tasks yet",
+      emptyDescription: "Click the plus button to create your first task, set a color, icon, and optional time.",
+      incompleteCount: "Incomplete",
+      completedCount: "Completed",
+      totalCount: "Total",
+      loading: "Loading your daily list...",
+      error: "Unable to load the daily list.",
+      deleteTask: "Delete task",
+      defaultColor: "Blue",
+      defaultIcon: "Document",
+      chooseTime: "Choose time",
+      noTimeSelected: "No time set",
+      clearTime: "Clear time",
+      timePickerTitle: "Pick a time",
+      hourLabel: "Hour",
+      minuteLabel: "Minute",
+      iconLabels: [
+        "Document",
+        "Checklist",
+        "Calendar",
+        "Clock",
+        "Todo",
+        "Sparkles",
+        "Book",
+        "Briefcase",
+        "Brain",
+        "Goal",
+        "Heart",
+        "Lightbulb",
+        "Clipboard",
+        "Star",
+        "Sun",
+        "Moon",
+        "Shield",
+        "Target",
+        "Rocket",
+        "Flower",
+        "Pine Tree",
+        "Flame",
+        "Bell",
+        "Message",
+        "Pencil",
+        "Folder",
+        "Archive",
+        "Badge",
+        "Check",
+        "Wand",
+      ],
+      resetHint: "Tasks reset automatically at midnight.",
+    },
   },
   ja: {
     common: {
@@ -432,6 +566,8 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
       friends: "フレンド",
       previous: "前へ",
       next: "次へ",
+      todo: "ToDoリスト",
+      daily: "日課",
     },
     signIn: {
       title: "サインイン",
@@ -608,6 +744,71 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
         ultraFocus: "ウルトラフォーカス",
       },
     },
+    dailySection: {
+      title: "日課リスト",
+      subtitle: "毎朝リセットされる、親子構造のあるタスクテンプレートです。",
+      addTask: "タスクを追加",
+      editTask: "タスクを編集",
+      taskTitle: "タスク名",
+      taskNotes: "メモ",
+      taskNotesPlaceholder: "補足やリマインダーを書きます...",
+      parentTask: "親タスク",
+      noParent: "親なし",
+      dueTime: "期限時刻",
+      color: "色",
+      icon: "アイコン",
+      colorPickerTitle: "色を選ぶ",
+      iconPickerTitle: "アイコンを選ぶ",
+      emptyTitle: "まだ日課がありません",
+      emptyDescription: "＋ボタンから最初のタスクを作成して、色・アイコン・時刻を設定してください。",
+      incompleteCount: "未完了",
+      completedCount: "完了",
+      totalCount: "合計",
+      loading: "日課リストを読み込み中...",
+      error: "日課リストを読み込めませんでした。",
+      deleteTask: "タスクを削除",
+      defaultColor: "青",
+      defaultIcon: "書類",
+      chooseTime: "時間を選ぶ",
+      noTimeSelected: "時刻なし",
+      clearTime: "時刻を消去",
+      timePickerTitle: "時刻を選ぶ",
+      hourLabel: "時",
+      minuteLabel: "分",
+      iconLabels: [
+        "書類",
+        "チェックリスト",
+        "カレンダー",
+        "時計",
+        "ToDo",
+        "きらめき",
+        "本",
+        "ブリーフケース",
+        "ブレイン",
+        "ゴール",
+        "ハート",
+        "電球",
+        "クリップボード",
+        "スター",
+        "太陽",
+        "月",
+        "シールド",
+        "ターゲット",
+        "ロケット",
+        "花",
+        "松の木",
+        "炎",
+        "ベル",
+        "メッセージ",
+        "鉛筆",
+        "フォルダ",
+        "アーカイブ",
+        "バッジ",
+        "チェック",
+        "ワンド",
+      ],
+      resetHint: "タスクは毎日0:00に自動でリセットされます。",
+    },
   },
   "zh-CN": {
     common: {
@@ -638,6 +839,8 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
       friends: "好友",
       previous: "上一页",
       next: "下一页",
+      todo: "待办事项",
+      daily: "日常清单",
     },
     signIn: {
       title: "登录",
@@ -812,6 +1015,71 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
         deepProductivity: "高效深度",
         ultraFocus: "超长专注",
       },
+    },
+    dailySection: {
+      title: "日常清单",
+      subtitle: "把你的日程做成带有嵌套结构的任务模板，每天清晨自动重置。",
+      addTask: "添加任务",
+      editTask: "编辑任务",
+      taskTitle: "任务标题",
+      taskNotes: "备注",
+      taskNotesPlaceholder: "补充说明、上下文或提醒...",
+      parentTask: "父任务",
+      noParent: "无父任务",
+      dueTime: "截止时间",
+      color: "颜色",
+      icon: "图标",
+      colorPickerTitle: "选择颜色",
+      iconPickerTitle: "选择图标",
+      emptyTitle: "还没有日常任务",
+      emptyDescription: "点击右上角的加号，创建第一条任务，并设置颜色、图标和可选时间。",
+      incompleteCount: "未完成",
+      completedCount: "已完成",
+      totalCount: "总计",
+      loading: "正在加载日常清单...",
+      error: "无法加载日常清单。",
+      deleteTask: "删除任务",
+      defaultColor: "蓝色",
+      defaultIcon: "文档",
+      chooseTime: "选择时间",
+      noTimeSelected: "未设置时间",
+      clearTime: "清除时间",
+      timePickerTitle: "选择时间",
+      hourLabel: "小时",
+      minuteLabel: "分钟",
+      iconLabels: [
+        "文档",
+        "清单",
+        "日历",
+        "时钟",
+        "待办",
+        "闪光",
+        "书本",
+        "公文包",
+        "大脑",
+        "目标",
+        "爱心",
+        "灵感灯泡",
+        "剪贴板",
+        "星星",
+        "太阳",
+        "月亮",
+        "盾牌",
+        "靶心",
+        "火箭",
+        "花朵",
+        "松树",
+        "火焰",
+        "铃铛",
+        "消息",
+        "铅笔",
+        "文件夹",
+        "归档",
+        "徽章",
+        "勾选",
+        "魔杖",
+      ],
+      resetHint: "任务会在每天 00:00 自动重置。",
     },
   },
 };
