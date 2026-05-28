@@ -1,5 +1,6 @@
 export * from './schema/users';
 export * from "./schema/daily-task";
+export * from "./schema/todo";
 export * from "./schema/pomodoro";
 export * from "./schema/pomodoro-record";
 export * from "./schema/heart-beat";

@@ -261,6 +261,39 @@ export type I18nDictionary = {
       ];
       resetHint: string;
     };
+  todoSection: {
+    title: string;
+    subtitle: string;
+    addTask: string;
+    editTask: string;
+    taskTitle: string;
+    taskNotes: string;
+    taskNotesPlaceholder: string;
+    parentTask: string;
+    noParent: string;
+    deadline: string;
+    date: string;
+    time: string;
+    deadlineHint: string;
+    color: string;
+    icon: string;
+    colorPickerTitle: string;
+    iconPickerTitle: string;
+    passedTime: string;
+    today: string;
+    tomorrow: string;
+    upcoming: string;
+    history: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    historyEmptyTitle: string;
+    historyEmptyDescription: string;
+    defaultColor: string;
+    defaultIcon: string;
+    deleteTask: string;
+    markFinished: string;
+    markUnfinished: string;
+  };
 };
 
 const dictionary: Record<SupportedLanguage, I18nDictionary> = {
@@ -473,12 +506,12 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
     },
     dailySection: {
       title: "Daily List",
-      subtitle: "Template your day with nested tasks that reset every morning.",
+      subtitle: "Nested tasks that reset each day.",
       addTask: "Add task",
       editTask: "Edit task",
       taskTitle: "Task title",
       taskNotes: "Notes",
-      taskNotesPlaceholder: "Add a quick note, context, or reminder...",
+      taskNotesPlaceholder: "Add a note...",
       parentTask: "Parent task",
       noParent: "No parent",
       dueTime: "Before time",
@@ -534,7 +567,40 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
         "Check",
         "Wand",
       ],
-      resetHint: "Tasks reset automatically at midnight.",
+      resetHint: "Resets at midnight.",
+    },
+    todoSection: {
+      title: "Todo List",
+      subtitle: "Tasks grouped by deadline.",
+      addTask: "Add task",
+      editTask: "Edit task",
+      taskTitle: "Title",
+      taskNotes: "Notes",
+      taskNotesPlaceholder: "Add a note...",
+      parentTask: "Parent",
+      noParent: "No parent",
+      deadline: "Deadline",
+      date: "Date",
+      time: "Time",
+      deadlineHint: "Date only becomes 23:59. No date uses today.",
+      color: "Color",
+      icon: "Icon",
+      colorPickerTitle: "Color",
+      iconPickerTitle: "Icon",
+      passedTime: "Passed Time",
+      today: "Today",
+      tomorrow: "Tomorrow",
+      upcoming: "Upcoming",
+      history: "History",
+      emptyTitle: "Nothing here yet",
+      emptyDescription: "Add a task to get started.",
+      historyEmptyTitle: "No completed tasks",
+      historyEmptyDescription: "Finished tasks show up here.",
+      defaultColor: "Blue",
+      defaultIcon: "Document",
+      deleteTask: "Delete task",
+      markFinished: "Finished",
+      markUnfinished: "Unfinished",
     },
   },
   ja: {
@@ -746,12 +812,12 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
     },
     dailySection: {
       title: "日課リスト",
-      subtitle: "毎朝リセットされる、親子構造のあるタスクテンプレートです。",
+      subtitle: "毎日リセットされるタスクです。",
       addTask: "タスクを追加",
       editTask: "タスクを編集",
       taskTitle: "タスク名",
       taskNotes: "メモ",
-      taskNotesPlaceholder: "補足やリマインダーを書きます...",
+      taskNotesPlaceholder: "メモを追加...",
       parentTask: "親タスク",
       noParent: "親なし",
       dueTime: "期限時刻",
@@ -807,7 +873,40 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
         "チェック",
         "ワンド",
       ],
-      resetHint: "タスクは毎日0:00に自動でリセットされます。",
+      resetHint: "0:00 にリセットされます。",
+    },
+    todoSection: {
+      title: "ToDoリスト",
+      subtitle: "期限でまとめて見るリストです。",
+      addTask: "追加",
+      editTask: "編集",
+      taskTitle: "タイトル",
+      taskNotes: "メモ",
+      taskNotesPlaceholder: "メモを追加...",
+      parentTask: "親",
+      noParent: "親なし",
+      deadline: "期限",
+      date: "日付",
+      time: "時刻",
+      deadlineHint: "日付だけなら 23:59。未設定なら今日。",
+      color: "色",
+      icon: "アイコン",
+      colorPickerTitle: "色",
+      iconPickerTitle: "アイコン",
+      passedTime: "期限超過",
+      today: "今日",
+      tomorrow: "明日",
+      upcoming: "以降",
+      history: "履歴",
+      emptyTitle: "まだありません",
+      emptyDescription: "タスクを追加してください。",
+      historyEmptyTitle: "完了済みはまだありません",
+      historyEmptyDescription: "完了したタスクがここに表示されます。",
+      defaultColor: "青",
+      defaultIcon: "書類",
+      deleteTask: "削除",
+      markFinished: "完了",
+      markUnfinished: "未完了",
     },
   },
   "zh-CN": {
@@ -1018,12 +1117,12 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
     },
     dailySection: {
       title: "日常清单",
-      subtitle: "把你的日程做成带有嵌套结构的任务模板，每天清晨自动重置。",
+      subtitle: "每天重置的任务。",
       addTask: "添加任务",
       editTask: "编辑任务",
       taskTitle: "任务标题",
       taskNotes: "备注",
-      taskNotesPlaceholder: "补充说明、上下文或提醒...",
+      taskNotesPlaceholder: "添加备注...",
       parentTask: "父任务",
       noParent: "无父任务",
       dueTime: "截止时间",
@@ -1079,7 +1178,40 @@ const dictionary: Record<SupportedLanguage, I18nDictionary> = {
         "勾选",
         "魔杖",
       ],
-      resetHint: "任务会在每天 00:00 自动重置。",
+      resetHint: "00:00 重置。",
+    },
+    todoSection: {
+      title: "待办事项",
+      subtitle: "按截止时间分组。",
+      addTask: "添加",
+      editTask: "编辑",
+      taskTitle: "标题",
+      taskNotes: "备注",
+      taskNotesPlaceholder: "添加备注...",
+      parentTask: "父任务",
+      noParent: "无父任务",
+      deadline: "截止时间",
+      date: "日期",
+      time: "时间",
+      deadlineHint: "只选日期会变成 23:59；不选日期默认今天。",
+      color: "颜色",
+      icon: "图标",
+      colorPickerTitle: "颜色",
+      iconPickerTitle: "图标",
+      passedTime: "已过期",
+      today: "今天",
+      tomorrow: "明天",
+      upcoming: "之后",
+      history: "历史",
+      emptyTitle: "这里还没有内容",
+      emptyDescription: "先添加一个任务。",
+      historyEmptyTitle: "还没有完成项",
+      historyEmptyDescription: "已完成的任务会显示在这里。",
+      defaultColor: "蓝色",
+      defaultIcon: "文档",
+      deleteTask: "删除",
+      markFinished: "已完成",
+      markUnfinished: "未完成",
     },
   },
 };
