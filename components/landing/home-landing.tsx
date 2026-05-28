@@ -8,46 +8,46 @@ import icon from "@/app/icon.png";
 
 const heroLines = {
   brand: "Pomotomo ポモトモ",
-  headlineA: "友達とつながりながら、",
-  headlineB: "今日の集中を、もっと心地よく。",
+  headlineA: "友達とゆるくつながって、",
+  headlineB: "毎日の集中を、気持ちよく続ける。",
   subtitle:
-    "ポモドーロ、ノート、ToDo、Daily List をひとつにまとめて、勉強も仕事も軽やかに続けられる作業アプリ。",
+    "ポモドーロ、ノート、ToDo、デイリータスク、友達とのつながりをひとつにまとめた、シンプルな作業アプリ。",
 } as const;
 
 const features = [
   {
     number: "01",
-    title: "集中のリズムが、自然と整う",
-    subtitle: "Pomodoro Timer",
+    title: "集中と休憩の切り替えが、かんたん",
+    subtitle: "タイマー",
     description:
-      "集中と休憩を心地よく切り替え。気合いに頼らず、毎日の作業ペースを安定させて、積み上げを続けられます。",
+      "時間を区切って、無理なく集中。自分のペースで続けやすくなります。",
     tint: "from-[#69b4ff]/28 via-[#dff0ff]/12 to-transparent",
     chip: "bg-[#f2f9ff] text-[#005bab]",
   },
   {
     number: "02",
-    title: "ひとりの作業が、続けやすくなる",
-    subtitle: "Friends",
+    title: "友達の存在が、いい刺激になる",
+    subtitle: "友達",
     description:
-      "友達のがんばりが見えるだけで、着手のハードルは下がる。ほどよいつながりが、集中の習慣づくりを支えます。",
+      "友達のがんばりが見えるだけで、少しやる気が出る。ゆるいつながりで、集中を続けやすくします。",
     tint: "from-[#9d7dff]/24 via-[#efe9ff]/10 to-transparent",
     chip: "bg-[#f3efff] text-[#5b3ea6]",
   },
   {
     number: "03",
-    title: "ノートは、考える流れを止めない",
-    subtitle: "Markdown + Image Notes",
+    title: "考えたことを、そのまま残せる",
+    subtitle: "ノート",
     description:
-      "Markdown と画像に対応したノートで、メモから整理までスムーズ。あとから見返しても分かりやすく、実用的です。",
+      "Markdown と画像に対応。メモも整理も、あとから見返しやすく残せます。",
     tint: "from-[#2a9d99]/22 via-[#e8fbfa]/10 to-transparent",
     chip: "bg-[#ebfbfa] text-[#1d7b77]",
   },
   {
     number: "04",
-    title: "今日やることが、すぐ決まる",
-    subtitle: "ToDo + Daily List",
+    title: "今日やることが、すぐ見える",
+    subtitle: "ToDo / Daily",
     description:
-      "ToDo と Daily List を同じ流れで管理。次にやることの迷いが減って、作業に入るまでの時間を短くできます。",
+      "やることをひとつにまとめて、今日の動きがすぐ分かるようにします。",
     tint: "from-[#ff9f57]/24 via-[#fff2e8]/10 to-transparent",
     chip: "bg-[#fff5eb] text-[#a64708]",
   },
@@ -236,9 +236,9 @@ export function HomeLanding() {
       >
         <div className="pointer-events-none absolute inset-0 opacity-35 [background-image:radial-gradient(rgba(59,130,246,0.24)_1px,transparent_1px)] [background-size:18px_18px]" />
         <div className="relative mx-auto w-full max-w-[1200px]">
-          <p className="text-sm font-semibold tracking-[0.125px] text-[#475569]">ポモトモとは？</p>
+          <p className="text-sm font-semibold tracking-[0.125px] text-[#475569]">ポモトモでできること</p>
           <h2 className="mt-3 text-[clamp(3.2rem,12vw,7.6rem)] font-bold leading-[0.9] tracking-[-0.06em] text-[#0b1f3a]">
-            Features
+            できること
           </h2>
         </div>
       </section>
